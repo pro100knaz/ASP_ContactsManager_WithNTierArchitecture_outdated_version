@@ -10,8 +10,8 @@ namespace ServiceContracts
 	public interface IPersonService
 	{
 		PersonResponse AddPerson(PersonAddRequest? addPerson);
-		PersonResponse GetPerson(Guid? id);
-		List<PersonResponse>? GetAllPersons();
+		PersonResponse? GetPerson(Guid? id);
+		List<PersonResponse> GetAllPersons();
 
 	}
 }

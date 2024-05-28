@@ -1,12 +1,14 @@
 ﻿using Enities;
 using ServiceContracts;
 using ServiceContracts.DTO.PersonDto;
+using Services.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 
 namespace Services
 {
@@ -36,16 +38,22 @@ namespace Services
 
 			//Model Validation
 
-			ValidationContext validationContext = new ValidationContext(addPerson);
+			//ValidationContext validationContext = new ValidationContext(addPerson);
 
-			List<ValidationResult> validationResults = new List<ValidationResult>();
+			//List<ValidationResult> validationResults = new List<ValidationResult>();
 
-			bool isValid = Validator.TryValidateObject(addPerson, validationContext, validationResults, true);
+			//bool isValid = Validator.TryValidateObject(addPerson, validationContext, validationResults, true);
 
-			if(!isValid)
-			{
-				throw new ArgumentException(validationResults.FirstOrDefault()?.ErrorMessage);
-			}
+			//if(!isValid)
+			//{
+			//	throw new ArgumentException(validationResults.FirstOrDefault()?.ErrorMessage);
+			//}
+
+			//Extension Method(Hand Made)
+			ValidationHelper.ModelValidation(addPerson);
+
+
+
 			//if (addPerson.PersonName is null)
 			//{
 			//	throw new ArgumentException(nameof(addPerson.PersonName));
@@ -64,16 +72,17 @@ namespace Services
 			//return personResponse;
 		}
 
-		public List<PersonResponse>? GetAllPersons()
+		public List<PersonResponse> GetAllPersons()
 		{
-			var result = persons.Select(c => c.ToPersonResponse()).ToList();
+			List<PersonResponse> personResponses = new List<PersonResponse>();
+			personResponses = persons.Select(c => c.ToPersonResponse()).ToList();
 			//{
 			//	var res = new PersonResponse();
 			//	res = c.ToPersonResponse();
 			//	return c.ToPersonResponse();
 			//}
 
-			return result ?? null;
+			return personResponses;
 		}
 
 		public PersonResponse? GetPerson(Guid? id)

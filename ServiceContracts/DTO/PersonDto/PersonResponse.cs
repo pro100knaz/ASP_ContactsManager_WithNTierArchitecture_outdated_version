@@ -9,6 +9,10 @@ namespace ServiceContracts.DTO.PersonDto
 {
 	public class PersonResponse
 	{
+		public override string ToString()
+		{
+			return $" Name = {PersonName}, \n email = {Email}, \n date of birthday = {DateOfBirth} \n CountryId = {CountryId}";
+		}
 		public Guid Id { get; set; }
 		public string? PersonName { get; set; }
 		public string? Email { get; set; }
@@ -43,6 +47,7 @@ namespace ServiceContracts.DTO.PersonDto
 		{
 			return new PersonResponse
 			{
+				PersonName = person.PersonName,
 				Id = person.Id,
 				Email = person.Email,
 				DateOfBirth = person.DateOfBirth,

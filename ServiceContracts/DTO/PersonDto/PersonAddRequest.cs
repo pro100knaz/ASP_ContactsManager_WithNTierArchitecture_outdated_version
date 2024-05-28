@@ -14,7 +14,7 @@ namespace ServiceContracts.DTO.PersonDto
 		[Required(ErrorMessage = "Person Name can't be blank ")]
 		public string? PersonName { get; set; }
 		[Required(ErrorMessage = "Email can't be blank ")]
-		[EmailAddress(ErrorMessage ="INVALID EMAIL"]
+		[EmailAddress(ErrorMessage ="INVALID EMAIL")]
 		public string? Email { get; set; }
 		public DateTime? DateOfBirth { get; set; }
 		public GenderOptions? Gender { get; set; }
@@ -25,12 +25,13 @@ namespace ServiceContracts.DTO.PersonDto
 
 		public Person ToPerson() => new Person
 		{
-			Address = Address,
-			Email = Email,
-			DateOfBirth = DateOfBirth,
-			CountryId = CountryId,
-			ReceiveNewsLatters = ReceiveNewsLatters,
-			Gender = Gender.ToString(),
+			PersonName = this.PersonName,
+			Address = this.Address,
+			Email = this.Email,
+			DateOfBirth = this.DateOfBirth,
+			CountryId = this.CountryId,
+			ReceiveNewsLatters = this.ReceiveNewsLatters,
+			Gender = this.Gender.ToString(),
 		};
 	}
 }
