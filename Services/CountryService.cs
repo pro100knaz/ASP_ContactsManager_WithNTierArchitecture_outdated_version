@@ -49,7 +49,7 @@ namespace Services
 
 			return _countries.Select(country => country.ToCountryResponse()).ToList();
 
-			return responseList;
+			
 
 		}
 
