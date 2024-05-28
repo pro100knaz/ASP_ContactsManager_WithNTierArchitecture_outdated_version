@@ -12,5 +12,9 @@ namespace ServiceContracts
 		CountryResponse AddCountry(CountryAddRequest? countryAddRequest);
 
 		List<CountryResponse> GetAllCountrise();
+
+
+		CountryResponse? GetCountryById(Guid? countryId);
+
 	}
 }

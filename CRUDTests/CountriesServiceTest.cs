@@ -76,8 +76,12 @@ namespace CRUDTests
 			//Act
 			CountryResponse response = _countriesService.AddCountry(request);
 
+			var listResponse = _countriesService.GetAllCountrise();
+
 			//Assert
 			Assert.True(response.CountryId != Guid.Empty);
+
+			Assert.Contains(response, listResponse);
 		}
 
 		#endregion
@@ -96,7 +100,7 @@ namespace CRUDTests
 			Assert.Empty(actual_country_from_response_list);
 
 		}
-
+		[Fact]
 		public void GetAllCountries_AddFewCountries()
 		{
 			//Acts
@@ -125,14 +129,45 @@ namespace CRUDTests
 				Assert.Contains(response, response_list);
 			}
 
-			//Asserts
-			Assert.Empty(country_request_list);
-
 		}
 
 		#endregion
 
+		#region GetCountryById
 
+		[Fact]
+		public void GetCountryById_NullParam()
+		{
+			//Arrange
+			Guid countryId = Guid.Empty;
+
+			//Act
+			CountryResponse? x = _countriesService.GetCountryById(countryId);
+
+			//Assert
+			Assert.Null(x);
+		}
+		[Fact]
+		public void GetCountryById_ProperParam()
+		{
+			//Arrange
+			Guid countryId = Guid.NewGuid();
+
+			 CountryAddRequest?  requestCountry = new CountryAddRequest() 
+			 {
+				 CountryName = "USA"
+			 };
+
+			var responseAdd = _countriesService.AddCountry(requestCountry);
+
+			//Act
+			CountryResponse? responseGet = _countriesService.GetCountryById(responseAdd.CountryId);
+
+			//Assert
+			Assert.Equal(responseAdd, responseGet);
+		}
+
+		#endregion
 
 
 	}

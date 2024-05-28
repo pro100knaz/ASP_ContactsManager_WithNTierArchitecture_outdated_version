@@ -40,7 +40,26 @@ namespace Services
 
 		public List<CountryResponse> GetAllCountrise()
 		{
-			throw new NotImplementedException();
+			List<CountryResponse> responseList = new List<CountryResponse>();
+
+			foreach(Country country in _countries)
+			{
+				responseList.Add(country.ToCountryResponse());
+			}
+
+			return _countries.Select(country => country.ToCountryResponse()).ToList();
+
+			return responseList;
+
 		}
+
+		public CountryResponse? GetCountryById(Guid? countryId)
+		{
+			var result = _countries.FirstOrDefault(c => c.CountryId == countryId);
+
+			return result?.ToCountryResponse() ?? null;
+		}
+
+
 	}
 }
