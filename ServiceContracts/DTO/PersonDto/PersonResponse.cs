@@ -1,4 +1,5 @@
 ﻿using Enities;
+using ServiceContracts.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +41,24 @@ namespace ServiceContracts.DTO.PersonDto
 			return Id.GetHashCode();
 
 		}
+
+
+		public PersonUpdateRequest ToPersonUpdateRequest()
+		{
+			return new PersonUpdateRequest()
+			{
+				PersonId = Id,
+				PersonName = PersonName,
+				Email = Email,
+				Address = Address,
+				CountryId = CountryId,
+				DateOfBirth = DateOfBirth,
+				Gender = (GenderOptions)Enum.Parse(typeof(GenderOptions), Gender, true),
+				ReceiveNewsLatters = ReceiveNewsLatters, 
+
+			};
+		}
+
 	}
 	public static class PersonExtension
 	{

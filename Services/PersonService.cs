@@ -1,6 +1,7 @@
 ﻿using Enities;
 using ServiceContracts;
 using ServiceContracts.DTO.PersonDto;
+using ServiceContracts.Enums;
 using Services.Helpers;
 using System;
 using System.Collections.Generic;
@@ -14,10 +15,11 @@ namespace Services
 {
 	public class PersonService : IPersonService
 	{
+		object f = new object();
 		private readonly List<Person> persons;
 		private readonly ICountriesService countriesService;
 		public PersonService()
-        {
+		{
 			persons = new List<Person>();
 			countriesService = new CountryService();
 		}
@@ -29,9 +31,9 @@ namespace Services
 			return personResponse;
 		}
 
-        public PersonResponse AddPerson(PersonAddRequest? addPerson)
+		public PersonResponse AddPerson(PersonAddRequest? addPerson)
 		{
-			if(addPerson is null)
+			if (addPerson is null)
 			{
 				throw new ArgumentNullException(nameof(addPerson));
 			}
@@ -87,8 +89,177 @@ namespace Services
 
 		public PersonResponse? GetPerson(Guid? id)
 		{
-			
+
 			return persons?.FirstOrDefault(c => c.Id == id)?.ToPersonResponse() ?? null;
+		}
+
+
+		public List<PersonResponse> GetFilteredPerson(string searchBy, string? searchString)
+		{
+			var persons = GetAllPersons();
+
+			if (string.IsNullOrEmpty(searchBy) || string.IsNullOrEmpty(searchString))
+			{
+				return persons;
+			}
+
+			switch (searchBy)
+			{
+				case nameof(Person.PersonName):
+					var x = persons.Where(temp =>
+					(!string.IsNullOrEmpty(temp.PersonName)) ?
+					temp.PersonName.Contains(searchString, StringComparison.OrdinalIgnoreCase) :
+					true).ToList();
+					return x;
+				case nameof(Person.Email):
+					persons = persons.Where(temp =>
+					(!string.IsNullOrEmpty(temp.Email)) ?
+					temp.Email.Contains(searchString, StringComparison.OrdinalIgnoreCase) :
+					true).ToList();
+					return persons;
+				case nameof(Person.DateOfBirth):
+					persons = persons.Where(temp =>
+					(temp.DateOfBirth != null) ?
+					temp.DateOfBirth.Value.ToString("dd MMMM yyyy").Contains(searchString, StringComparison.OrdinalIgnoreCase) :
+					true).ToList();
+					return persons;
+				case nameof(Person.Gender):
+					persons = persons.Where(temp =>
+					(!string.IsNullOrEmpty(temp.Gender)) ?
+					temp.Gender.Contains(searchString, StringComparison.OrdinalIgnoreCase) :
+					true).ToList();
+					return persons;
+
+				case nameof(Person.Country):
+					persons = persons.Where(temp =>
+					(!string.IsNullOrEmpty(temp.Country)) ?
+					temp.Country.Contains(searchString, StringComparison.OrdinalIgnoreCase) :
+					true).ToList();
+					return persons;
+				case nameof(Person.Address):
+					persons = persons.Where(temp =>
+					(!string.IsNullOrEmpty(temp.Address)) ?
+					temp.Address.Contains(searchString, StringComparison.OrdinalIgnoreCase) :
+					true).ToList();
+					return persons;
+				default:
+					break;
+
+
+			}
+			return persons;
+
+
+		}
+
+		public List<PersonResponse> GetSortedPersons
+			(List<PersonResponse> allPersons, string sortBy, SortOrderOptions sortOrderOptions)
+		{
+			if (string.IsNullOrEmpty(sortBy))
+			{
+				return allPersons;
+			}
+			List<PersonResponse> result = (sortBy, sortOrderOptions) switch
+			{
+				(nameof(PersonResponse.PersonName), SortOrderOptions.Ascending)
+				=> allPersons.OrderBy(temp => temp.PersonName, StringComparer.OrdinalIgnoreCase).ToList(),
+
+				(nameof(PersonResponse.PersonName), SortOrderOptions.Descending)
+				=> allPersons.OrderByDescending(temp => temp.PersonName, StringComparer.OrdinalIgnoreCase).ToList(),
+
+
+				(nameof(PersonResponse.Email), SortOrderOptions.Ascending)
+				=> allPersons.OrderBy(temp => temp.Email, StringComparer.OrdinalIgnoreCase).ToList(),
+
+				(nameof(PersonResponse.Email), SortOrderOptions.Descending)
+				=> allPersons.OrderByDescending(temp => temp.Email, StringComparer.OrdinalIgnoreCase).ToList(),
+				
+				(nameof(PersonResponse.DateOfBirth), SortOrderOptions.Ascending)
+				=> allPersons.OrderBy(temp => temp.DateOfBirth).ToList(),
+
+				(nameof(PersonResponse.DateOfBirth), SortOrderOptions.Descending)
+				=> allPersons.OrderByDescending(temp => temp.DateOfBirth).ToList(),
+
+
+
+				(nameof(PersonResponse.Age), SortOrderOptions.Ascending)
+				=> allPersons.OrderBy(temp => temp.Age).ToList(),
+
+				(nameof(PersonResponse.Age), SortOrderOptions.Descending)
+				=> allPersons.OrderByDescending(temp => temp.Age).ToList(),
+
+
+
+				(nameof(PersonResponse.Gender), SortOrderOptions.Ascending)
+				=> allPersons.OrderBy(temp => temp.Gender, StringComparer.OrdinalIgnoreCase).ToList(),
+
+				(nameof(PersonResponse.Gender), SortOrderOptions.Descending)
+				=> allPersons.OrderByDescending(temp => temp.Gender, StringComparer.OrdinalIgnoreCase).ToList(),
+
+
+
+
+				(nameof(PersonResponse.Address), SortOrderOptions.Ascending)
+				=> allPersons.OrderBy(temp => temp.Address, StringComparer.OrdinalIgnoreCase).ToList(),
+
+				(nameof(PersonResponse.Address), SortOrderOptions.Descending)
+				=> allPersons.OrderByDescending(temp => temp.Address, StringComparer.OrdinalIgnoreCase).ToList(),
+
+
+
+				(nameof(PersonResponse.ReceiveNewsLatters), SortOrderOptions.Ascending)
+				=> allPersons.OrderBy(temp => temp.ReceiveNewsLatters).ToList(),
+
+				(nameof(PersonResponse.ReceiveNewsLatters), SortOrderOptions.Descending)
+				=> allPersons.OrderByDescending(temp => temp.ReceiveNewsLatters).ToList(),
+
+				_  => allPersons
+			};
+
+			return result;
+
+		}
+
+		public PersonResponse UpdatePerson(PersonUpdateRequest? updatePerson)
+		{
+			if (updatePerson is null)
+				throw new ArgumentNullException(nameof(updatePerson));
+
+			ValidationHelper.ModelValidation(updatePerson);
+
+			Person? matchingPerson = persons.FirstOrDefault(temp => temp.Id == updatePerson.PersonId);
+
+			if (matchingPerson is null)
+			{
+				throw new ArgumentException("given Person Id does not exist");	
+			}
+
+			//update all deetails
+
+			matchingPerson.PersonName = updatePerson.PersonName;
+			matchingPerson.Gender = updatePerson.Gender.ToString();
+			matchingPerson.Address = updatePerson.Address;
+			matchingPerson.CountryId = updatePerson.CountryId;
+			matchingPerson.DateOfBirth = updatePerson.DateOfBirth;
+			matchingPerson.Email = updatePerson.Email;
+			matchingPerson.ReceiveNewsLatters = updatePerson.ReceiveNewsLatters;
+
+
+			return matchingPerson.ToPersonResponse();
+
+			PersonResponse result = updatePerson.ToPerson().ToPersonResponse();
+		}
+
+		public bool DeletePerson(Guid? id)
+		{
+			var x = GetPerson(id);
+			if (x is null)
+				return false;
+
+			Person resultPerson = persons.FirstOrDefault(p => p.Id == x.Id)!;
+
+			persons.Remove(resultPerson);
+			return true;
 		}
 	}
 }
