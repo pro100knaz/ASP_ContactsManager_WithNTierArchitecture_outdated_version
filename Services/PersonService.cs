@@ -93,7 +93,6 @@ namespace Services
 			return persons?.FirstOrDefault(c => c.Id == id)?.ToPersonResponse() ?? null;
 		}
 
-
 		public List<PersonResponse> GetFilteredPerson(string searchBy, string? searchString)
 		{
 			var persons = GetAllPersons();
@@ -252,13 +251,18 @@ namespace Services
 
 		public bool DeletePerson(Guid? id)
 		{
+			if(id == null)
+			{
+				throw new ArgumentNullException(nameof(id));
+			}
+
 			var x = GetPerson(id);
 			if (x is null)
 				return false;
 
 			Person resultPerson = persons.FirstOrDefault(p => p.Id == x.Id)!;
 
-			persons.Remove(resultPerson);
+			persons.RemoveAll(temp => resultPerson.Id == id);
 			return true;
 		}
 	}
