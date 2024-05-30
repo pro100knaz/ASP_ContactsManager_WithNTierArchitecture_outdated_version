@@ -22,7 +22,7 @@ namespace CRUDTests
 
 		public PersonServiceTest(ITestOutputHelper testOutputHelper)
 		{
-			personService = new PersonService();
+			personService = new PersonService(false);
 			countryService = new CountryService(false);
 			this.testOutputHelper = testOutputHelper;
 		}
