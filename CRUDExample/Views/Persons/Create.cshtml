@@ -1,0 +1,128 @@
+﻿@{
+	ViewBag.Title = "Create Person";
+}
+
+<a href="~/persons/index" class="link-hover"> Back To Persons List </a>
+
+<h2> Create Person</h2>
+
+<div class="w-50">
+	<form action="~/persons/create" method="post">
+		<div class="container">
+
+
+
+
+			<div class="form-field flex">
+				<div class="w-25">
+					<label for="PersonName" class="form-label">Person Name</label>
+				</div>
+
+				<div class="flex-1">
+					<input type="text" id="PersonName" name="PersonName" class="form-input" /> @*Same as the Name of The Propery To maKE IT Little Bit More Convenient*@
+				</div>
+			</div>
+
+			<div class="form-field flex">
+				<div class="w-25">
+					<label for="Email" class="form-label">Email</label>
+				</div>
+
+				<div class="flex-1">
+					<input type="text" id="Email" name="Email" class="form-input" /> @*Same as the Name of The Propery To maKE IT Little Bit More Convenient*@
+				</div>
+			</div>
+
+			<div class="form-field flex">
+				<div class="w-25">
+					<label for="Address" class="form-label">Address</label>
+				</div>
+
+				<div class="flex-1">
+					<textarea type="text" id="Address" name="Address" class="form-input">
+
+					</textarea> @*Same as the Name of The Propery To maKE IT Little Bit More Convenient*@
+				</div>
+			</div>
+			@*Sawddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddnt*@
+
+			<div class="form-field flex">
+				<div class="w-25">
+					<label for="DateOfBirth" class="form-label">Date Of Birth</label>
+				</div>
+
+				<div class="flex-1">
+					<input type="date" id="DateOfBirth" name="DateOfBirth" class="form-input" /> @*Same as the Name of The Propery To maKE IT Little Bit More Convenient*@
+				</div>
+			</div>
+			@*Sawddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddnt*@
+
+			<div class="form-field flex">
+				<div class="w-25">
+					<label class="form-label">Gender</label>
+				</div>
+				<div class="flex-1">
+					<input type="radio" id="Male" name="Gender" value="Male" />
+					<label for="Male">Male</label>
+
+					<input type="radio" id="Female" name="Gender" value="Female" class="ml" />
+					<label for="Female">Female</label>
+
+					<input type="radio" id="Other" name="Gender" value="Other" class="ml" />
+					<label for="Other">Other</label>
+				</div>
+			</div>
+
+			@*Sawddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddnt*@
+
+			<div class="form-field flex">
+				<div class="w-25">
+					<label for="CountryId" class="form-label">Country</label>
+				</div>
+
+				<div class="flex-1">
+					<select name="CountryId" id="CountryId" class="form-input">
+						<option value="">PleASE Select a country!!!</option>
+						@foreach (CountryResponse country in @ViewBag.Countries)
+						{
+							<option value="@country.CountryId">@country.CountryName</option>
+						}
+					</select>
+				</div>
+			</div>
+			@*Sawddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddnt*@
+
+			<div class="form-field flex">
+				<div class="w-25">
+				</div>
+				<div class="flex-1">
+					<input type="checkbox" id="ReceiveNewsLatters" name="ReceiveNewsLatters" value="true" />
+					<label for="ReceiveNewsLatters" class="form-label">Receive News Latters</label>
+				</div>
+			</div>
+			@*Sawddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddnt*@
+			<div class="form-field flex">
+				<div class="w-25">
+				</div>
+				<div class="flex-1">
+					<button class="button button-green-back">Create</button>
+
+					@if (ViewBag.Errors is not null)
+					{
+						<div class="text-red ml">
+							<ul>
+								@foreach (string error in ViewBag.Errors)
+								{
+									<li class="ml">@error</li>
+								}
+							</ul>
+						</div>
+					}
+				</div>
+			</div>
+			@*Sawddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddnt*@
+
+		</div>
+		<button>Submit</button>
+	</form>
+</div>

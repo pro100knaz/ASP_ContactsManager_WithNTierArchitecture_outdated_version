@@ -2,6 +2,7 @@
 
 
 
+
 @{
 	ViewBag.Title = "Persons";
 }
@@ -11,9 +12,12 @@
 	<h1 class="text-center">Default Page ...</h1>
 	<h4 class="text-center text-green"> Maybe :)</h4>
 
+	<a href="~/persons/create">Create New Person</a>
+
 	<div class="box flex">
 		<div class="flex-1">
-			<select class="form-input" name="searchBy"> @* searchBy = PesonName (with name it becones a part of  form http request ) *@
+			<select class="form-input" name="searchBy">
+				@* searchBy = PesonName (with name it becones a part of  form http request ) *@
 				@foreach (var field in ViewBag.SearchFields)
 				{
 					if (field.Key == ViewBag.CurrentSearchBy)
@@ -30,72 +34,118 @@
 		</div>
 		<div class="flex-1">
 			<input type="search" id="Search" value="@ViewBag.CurrentSearchString" class="form-input"
-			name="searchString"
-			placeholder="Search"></input>
+				   name="searchString"
+				   placeholder="Search"></input>
 		</div>
 		<div class="flex-1">
 			<button class="button button-blue-back">Search</button>
-			<a href="~/persons/index"  class="link-hover">Clear all</a>
+			<a href="~/persons/index" class="link-hover">Clear all</a>
 		</div>
 	</div>
 
 	<table class="table w-100 mt">
 		<thead>
 			<tr>
-				@if(ViewBag.CurrentSortBy == nameof(PersonResponse.PersonName) 
+				@await Html.PartialAsync("_GridColumnHeader", new ViewDataDictionary(ViewData)
+				{
+				{"ColumnName", nameof(PersonResponse.PersonName)},
+				{"DisplayName", "Person Name"}
+				})
+
+				@await Html.PartialAsync("_GridColumnHeader", new ViewDataDictionary(ViewData)
+				{
+				{"ColumnName", nameof(PersonResponse.Email)},
+				{"DisplayName", "Email"}
+				})
+
+				@await Html.PartialAsync("_GridColumnHeader", new ViewDataDictionary(ViewData)
+				{
+				{"ColumnName", nameof(PersonResponse.DateOfBirth)},
+				{"DisplayName", "Date Of Birth"}
+				})
+
+				@await Html.PartialAsync("_GridColumnHeader", new ViewDataDictionary(ViewData)
+				{
+				{"ColumnName", nameof(PersonResponse.Age)},
+				{"DisplayName", "Age"}
+				})
+
+				@await Html.PartialAsync("_GridColumnHeader", new ViewDataDictionary(ViewData)
+				{
+				{"ColumnName", nameof(PersonResponse.Gender)},
+				{"DisplayName", "Gender"}
+				})
+
+				@await Html.PartialAsync("_GridColumnHeader", new ViewDataDictionary(ViewData)
+				{
+				{"ColumnName", nameof(PersonResponse.Country)},
+				{"DisplayName", "Country"}
+				})
+
+				@await Html.PartialAsync("_GridColumnHeader", new ViewDataDictionary(ViewData)
+				{
+				{"ColumnName", nameof(PersonResponse.Address)},
+				{"DisplayName", "Address"}
+				})
+
+				@await Html.PartialAsync("_GridColumnHeader", new ViewDataDictionary(ViewData)
+				{
+				{"ColumnName", nameof(PersonResponse.ReceiveNewsLatters)},
+				{"DisplayName", "Receive New Laters"}
+				})
+
+
+				<!-- #region name -->
+				@* @if(ViewBag.CurrentSortBy == nameof(PersonResponse.PersonName)
 				&& ViewBag.CurrentSortOrder == SortOrderOptions.Ascending.ToString())
 				{
-					<th>
-					<a href="~/persons/index?
-					searchBy=@ViewBag.CurrentSearchBy&
-					searchString=@ViewBag.CurrentSearchString&
-					sortBy=@nameof(PersonResponse.PersonName)&
-					sortOrder=@nameof(SortOrderOptions.Descending)">Person Name</a>
-					</th>
+				<th>
+				<a href="~/persons/index?
+				searchBy=@ViewBag.CurrentSearchBy&
+				searchString=@ViewBag.CurrentSearchString&
+				sortBy=@nameof(PersonResponse.PersonName)&
+				sortOrder=@nameof(SortOrderOptions.Descending)">Person Name</a>
+				<i class="fa-solid fa-sort-up"></i>
+				</th>
+
 				}
-				else if (ViewBag.CurrentSortBy == nameof(PersonResponse.PersonName) 
-				&& ViewBag.CurrentSortOrder == SortOrderOptions.Ascending.ToString())
+				else if (ViewBag.CurrentSortBy == nameof(PersonResponse.PersonName)
+				&& ViewBag.CurrentSortOrder == SortOrderOptions.Descending.ToString())
 				{
-					<th>
-						<a href="~/persons/index?
-					searchBy=@ViewBag.CurrentSearchBy&
-					searchString=@ViewBag.CurrentSearchString&
-					sortBy=@nameof(PersonResponse.PersonName)&
-					sortOrder=@nameof(SortOrderOptions.Ascending)">Person Name</a>
-					</th>
+				<th>
+				<a href="~/persons/index?
+				searchBy=@ViewBag.CurrentSearchBy&
+				searchString=@ViewBag.CurrentSearchString&
+				sortBy=@nameof(PersonResponse.PersonName)&
+				sortOrder=@nameof(SortOrderOptions.Ascending)">Person Name</a> @* в случае нажатии на кнопку вид сортировки поменяется */@
+				<i class="fa-solid fa-sort-down"></i>
+				</th>
 				}
 				else
 				{
-					<th>
-						<a href="~/persons/index?
-					searchBy=@ViewBag.CurrentSearchBy&
-					searchString=@ViewBag.CurrentSearchString&
-					sortBy=@nameof(PersonResponse.PersonName)&
-					sortOrder=@nameof(SortOrderOptions.Ascending)">Person Name</a>
-					</th>
-				}
-
-				<th>Email</th>
-				<th>Date of Birth</th>
-				<th>Age</th>
-				<th>Gender</th>
-				<th>Country</th>
-				<th>Address</th>
-				<th>Receive New Laters</th>
+				<th>
+				<a href="~/persons/index?
+				searchBy=@ViewBag.CurrentSearchBy&
+				searchString=@ViewBag.CurrentSearchString&
+				sortBy=@nameof(PersonResponse.PersonName)&
+				sortOrder=@nameof(SortOrderOptions.Ascending)">Person Name</a>
+				</th>
+				} *@
+				<!-- #endregion -->
 			</tr>
 		</thead>
 		<tbody>
 			@foreach (PersonResponse person in Model)
 			{
 				<tr>
-					<td>@person.PersonName</td>
-					<td>@person.Email</td>
-					<td>@person.DateOfBirth?.ToString("dd MMM yyyy")</td>
-					<td>@person.Age</td>
-					<td>@person.Gender</td>
-					<td>@person.Country</td>
-					<td>@person.Address</td>
-					<td>@person.ReceiveNewsLatters.ToString()</td>
+					<td style="width:15%">@person.PersonName</td>
+					<td style="width:20%">@person.Email </td>
+					<td style="width:13%">@person.DateOfBirth?.ToString("dd MMM yyyy")</td>
+					<td style="width:9%">@person.Age</td>
+					<td style="width:9%">@person.Gender</td>
+					<td style="width:10%">@person.Country</td>
+					<td style="width:10%">@person.Address</td>
+					<td style="width:20%">@person.ReceiveNewsLatters.ToString()</td>
 				</tr>
 			}
 		</tbody>

@@ -53,9 +53,8 @@ namespace ServiceContracts.DTO.PersonDto
 				Address = Address,
 				CountryId = CountryId,
 				DateOfBirth = DateOfBirth,
-				Gender = (GenderOptions)Enum.Parse(typeof(GenderOptions), Gender, true),
-				ReceiveNewsLatters = ReceiveNewsLatters, 
-
+				Gender = (GenderOptions)Enum.Parse(typeof(GenderOptions), Gender ?? "Other", true),
+				ReceiveNewsLatters = ReceiveNewsLatters,
 			};
 		}
 
