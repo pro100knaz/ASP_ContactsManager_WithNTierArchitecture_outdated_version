@@ -15,7 +15,7 @@ namespace CRUDTests
 
 		public CountriesServiceTest()
 		{
-			_countriesService = new CountryService();
+			_countriesService = new CountryService(false);
 		}
 		// null - throw ARGUM
 

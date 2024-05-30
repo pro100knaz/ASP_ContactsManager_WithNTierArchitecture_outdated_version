@@ -21,7 +21,19 @@ namespace Services
 		public PersonService()
 		{
 			persons = new List<Person>();
-			countriesService = new CountryService();
+			countriesService = new CountryService(false);
+
+			Enumerable.Range(0, 50).Select(i => AddPerson(
+				new PersonAddRequest()
+				{
+					Address = $"Address {i}",
+					CountryId = countriesService.GetAllCountrise()[i % 4].CountryId,
+					DateOfBirth = DateTime.Now,
+					Email = $"null{i+ i % 3}@mail.ru",
+					Gender = GenderOptions.Male,
+					PersonName = $"Name i + 120 =  {i + 120}",
+					ReceiveNewsLatters = Convert.ToBoolean((i % 2)),
+				}));
 		}
 
 		private PersonResponse ConvertPersonToPersonResponse(Person person)

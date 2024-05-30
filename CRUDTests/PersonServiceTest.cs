@@ -23,7 +23,7 @@ namespace CRUDTests
 		public PersonServiceTest(ITestOutputHelper testOutputHelper)
 		{
 			personService = new PersonService();
-			countryService = new CountryService();
+			countryService = new CountryService(false);
 			this.testOutputHelper = testOutputHelper;
 		}
 		#region  AddPerson
