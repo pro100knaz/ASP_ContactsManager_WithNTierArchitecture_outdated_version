@@ -15,9 +15,12 @@ namespace ServiceContracts.DTO.PersonDto
 		public string? PersonName { get; set; }
 		[Required(ErrorMessage = "Email can't be blank ")]
 		[EmailAddress(ErrorMessage ="INVALID EMAIL")]
+		[DataType(DataType.EmailAddress)]
 		public string? Email { get; set; }
 		public DateTime? DateOfBirth { get; set; }
+		[Required(ErrorMessage = "Please select a gender")]
 		public GenderOptions? Gender { get; set; }
+		[Required(ErrorMessage = "Please select a countryy, it can't be blank ")]
 		public Guid? CountryId { get; set; }
 		public string? Address { get; set; }
 		public bool ReceiveNewsLatters { get; set; }
@@ -29,7 +32,7 @@ namespace ServiceContracts.DTO.PersonDto
 			Address = this.Address,
 			Email = this.Email,
 			DateOfBirth = this.DateOfBirth,
-			CountryId = this.CountryId,
+			 
 			ReceiveNewsLatters = this.ReceiveNewsLatters,
 			Gender = this.Gender.ToString(),
 		};

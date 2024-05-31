@@ -288,15 +288,5 @@ namespace Services
 			persons.RemoveAll(temp => resultPerson.Id == id);
 			return true;
 		}
-
-
-		//private PersonResponse ConvertPersonToPersonResponse(Person person)
-		//{
-		//	PersonResponse personResponse = person.ToPersonResponse();
-		//	personResponse.Country = countriesService.GetCountryById(person.CountryId)?.CountryName;
-
-		//	return personResponse;
-		//}
-
 	}
 }

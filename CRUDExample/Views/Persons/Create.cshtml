@@ -1,4 +1,6 @@
-﻿@{
+﻿@model PersonAddRequest
+
+@{
 	ViewBag.Title = "Create Person";
 }
 
@@ -9,69 +11,140 @@
 <div class="w-50">
 	<form asp-action="create" asp-controller="persons" method="post">
 		<div class="container">
-
-
-
-
+			@*PersonName*@
 			<div class="form-field flex">
 				<div class="w-25">
-					<label for="PersonName" class="form-label">Person Name</label>
+					<label asp-for="PersonName" class="form-label">Person Name</label>
 				</div>
 
 				<div class="flex-1">
-					<input type="text" id="PersonName" name="PersonName" class="form-input" /> @*Same as the Name of The Propery To maKE IT Little Bit More Convenient*@
+					<input asp-for="PersonName" class="form-input" /> @*Asp-for и валидация и привязка данных автоматически*@
+					<span asp-validation-for="PersonName" class="text-red"></span>
 				</div>
 			</div>
+
+			@*Email*@
 
 			<div class="form-field flex">
 				<div class="w-25">
-					<label for="Email" class="form-label">Email</label>
+					<label asp-for="Email" class="form-label">Email</label>
 				</div>
 
 				<div class="flex-1">
-					<input type="text" id="Email" name="Email" class="form-input" /> @*Same as the Name of The Propery To maKE IT Little Bit More Convenient*@
+					<input asp-for="Email" class="form-input" /> @*type="email"  OR Указать атрибут нужно типо прямо в модели (нужно для валидациии т.к. по дефолту это текст)*@
+					<span asp-validation-for="Email" class="text-red"></span>
 				</div>
 			</div>
 
-			<div class="form-field flex">
-				<div class="w-25">
-					<label for="Address" class="form-label">Address</label>
-				</div>
-
-				<div class="flex-1">
-					<textarea type="text" id="Address" name="Address" class="form-input">
-
-					</textarea> @*Same as the Name of The Propery To maKE IT Little Bit More Convenient*@
-				</div>
-			</div>
 			@*Sawddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddnt*@
 
 			<div class="form-field flex">
 				<div class="w-25">
-					<label for="DateOfBirth" class="form-label">Date Of Birth</label>
+					<label asp-for="DateOfBirth" class="form-label">Date Of Birth</label>
 				</div>
 
 				<div class="flex-1">
-					<input type="date" id="DateOfBirth" name="DateOfBirth" class="form-input" /> @*Same as the Name of The Propery To maKE IT Little Bit More Convenient*@
+					<input asp-for="DateOfBirth" type="date" class="form-input" /> @*Same as the Name of The Propery To maKE IT Little Bit More Convenient*@
+					<span asp-validation-for="DateOfBirth" class="text-red"></span>
 				</div>
 			</div>
 			@*Sawddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddnt*@
+			
+		@* 	<div class="form-field flex">
+			<div class="w-25">
+			<label class="form-label">Gender</label>
+			</div>
+			<div class="flex-1">
+			<input type="radio" id="Male" name="Gender" value="Male" />
+			<label for="Male">Male</label>
+
+			<input type="radio" id="Female" name="Gender" value="Female" class="ml" />
+			<label for="Female">Female</label>
+
+			<input type="radio" id="Other" name="Gender" value="Other" class="ml" />
+			<label for="Other">Other</label>
+			</div>
+			</div> *@
+
+
 
 			<div class="form-field flex">
 				<div class="w-25">
 					<label class="form-label">Gender</label>
 				</div>
 				<div class="flex-1">
-					<input type="radio" id="Male" name="Gender" value="Male" />
-					<label for="Male">Male</label>
+					@{
+						List<string> genders = Enum.GetNames(typeof(GenderOptions)).ToList();
+					}
+					@foreach (var gender in genders)
+					{
+						<input type="radio" asp-for="Gender" id="@gender" value="@gender" />
+						<label class="form-label" for="@gender">@gender</label>
+					}
+					<span asp-validation-for="Gender" class="text-red"></span>
 
-					<input type="radio" id="Female" name="Gender" value="Female" class="ml" />
-					<label for="Female">Female</label>
-
-					<input type="radio" id="Other" name="Gender" value="Other" class="ml" />
-					<label for="Other">Other</label>
 				</div>
 			</div>
+
+
+
+
+@* 
+
+			<div class="flex-1">
+			<input type="radio" id="Male" name="Gender" value="Male" />
+			<label for="Male">Male</label>
+
+			<input type="radio" id="Female" name="Gender" value="Female" class="ml" />
+			<label for="Female">Female</label>
+
+			<input type="radio" id="Other" name="Gender" value="Other" class="ml" />
+			<label for="Other">Other</label>
+			
+			
+			
+			
+			<div class="flex-1">
+			<input type="radio" value="Male" id="Gender" name="Gender" />
+			<label class="form-label" for="Male">Male</label>
+			<input type="radio" value="Female" id="Gender" name="Gender" />
+			<label class="form-label" for="Female">Female</label>
+			<input type="radio" value="Other" id="Gender" name="Gender" />
+			<label class="form-label" for="Other">Other</label>
+			</div>
+
+
+
+
+
+			<div class="form-field flex">
+			<div class="w-25">
+			<label class="form-label" for="PersonName">Person Name</label>
+			</div>
+
+			<div class="flex-1">
+			<input class="form-input" type="text" data-val="true" data-val-required="Person Name can&#x27;t be blank " id="PersonName" name="PersonName" value="" />
+			<span class="text-red field-validation-valid" data-valmsg-for="PersonName" data-valmsg-replace="true"></span>
+			</div>
+			</div>
+
+
+			<div class="form-field flex">
+			<div class="w-25">
+			<label class="form-label" for="Email">Email</label>
+			</div>
+
+			<div class="flex-1">
+			<input class="form-input" type="email" data-val="true" data-val-email="INVALID EMAIL" data-val-required="Email can&#x27;t be blank " id="Email" name="Email" value="" />
+			<span class="text-red field-validation-valid" data-valmsg-for="Email" data-valmsg-replace="true"></span>
+			</div>
+			</div>
+
+			 *@
+			
+			
+			
+			
 
 			@*Sawddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddnt*@
 
@@ -81,23 +154,38 @@
 				</div>
 
 				<div class="flex-1">
-					<select name="CountryId" id="CountryId" class="form-input">
-						<option value="">PleASE Select a country!!!</option>
-						@foreach (CountryResponse country in @ViewBag.Countries)
-						{
-							<option value="@country.CountryId">@country.CountryName</option>
-						}
+					<select asp-for="CountryId" class="form-input" asp-items="@ViewBag.Countries">
+						<option value="">PleASE Select a country!!!</option> @*For default value*@
 					</select>
+					<span asp-validation-for="CountryId" class="text-red"></span>
+
 				</div>
 			</div>
+
+
+			@*Address*@
+			<div class="form-field flex">
+				<div class="w-25">
+					<label asp-for="Address" class="form-label">Address</label>
+				</div>
+
+				<div class="flex-1">
+					<textarea asp-for="Address" class="form-input"></textarea> @*Same as the Name of The Propery To maKE IT Little Bit More Convenient*@
+
+					<span asp-validation-for="Address" class="text-red"></span>
+				</div>
+			</div>
+
+
 			@*Sawddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddnt*@
 
 			<div class="form-field flex">
 				<div class="w-25">
 				</div>
 				<div class="flex-1">
-					<input type="checkbox" id="ReceiveNewsLatters" name="ReceiveNewsLatters" value="true" />
-					<label for="ReceiveNewsLatters" class="form-label">Receive News Latters</label>
+					<input type="checkbox" asp-for="ReceiveNewsLatters"/>
+					<label asp-for="ReceiveNewsLatters" class="form-label">Receive News Latters</label> @*for нужен чтобы при начатии на текст выбиралась и выбранно или нет корочу вы поняли*@
+					<span asp-validation-for="ReceiveNewsLatters" class="text-red"></span>
 				</div>
 			</div>
 			@*Sawddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddnt*@
@@ -106,6 +194,7 @@
 				</div>
 				<div class="flex-1">
 					<button class="button button-green-back">Create</button>
+					<div asp-validation-summary="All"></div>
 
 					@if (ViewBag.Errors is not null)
 					{
@@ -126,3 +215,16 @@
 		<button>Submit</button>
 	</form>
 </div>
+
+@section scripts{
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+			crossorigin="anonymous" asp-fallback-test="window.jQuery" asp-fallback-src="~/jquery.min" referrerpolicy="no-referrer"></script>
+
+	<script asp-fallback-src="~/jquery.validate.min"
+			asp-fallback-test="window.jQuery.validator"
+			src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js"></script>
+
+	<script asp-fallback-src="~/jquery.validate.unobtrusive.min"
+			asp-fallback-test="window.jQuery.validator.unobstrusive"
+			src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+}
