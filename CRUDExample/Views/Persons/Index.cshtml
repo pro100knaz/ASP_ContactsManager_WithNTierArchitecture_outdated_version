@@ -1,18 +1,15 @@
 ﻿@model IEnumerable<PersonResponse>
 
-
-
-
 @{
 	ViewBag.Title = "Persons";
 }
 
 
-<form action="~/persons/index" method="get">
+<form asp-action="Index" asp-controller="Persons" method="get">
 	<h1 class="text-center">Default Page ...</h1>
 	<h4 class="text-center text-green"> Maybe :)</h4>
 
-	<a href="~/persons/create">Create New Person</a>
+	<a asp-action="Create" asp-controller="Persons" >Create New Person</a>
 
 	<div class="box flex">
 		<div class="flex-1">
