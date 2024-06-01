@@ -1,9 +1,11 @@
 ﻿using Enities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using ServiceContracts;
 using ServiceContracts.DTO.PersonDto;
 using ServiceContracts.Enums;
+using System.Text.Json;
 
 namespace CRUDExample.Controllers
 {
@@ -35,6 +37,22 @@ namespace CRUDExample.Controllers
 				{ nameof(PersonResponse.CountryId), "CountryId"},
 				{ nameof(PersonResponse.Address), "Address"},
 			};
+
+
+			string countriesJson = System.IO.File.ReadAllText("countries.json");
+
+			var countriesFronJosn = JsonSerializer.Deserialize<List<Country>>(countriesJson).ToArray();
+
+			//modelBuilder.Entity<Country>().HasData(countries.ToArray());
+
+			string personsJson = System.IO.File.ReadAllText("persons.json");
+
+			var personsFromHJson = JsonSerializer.Deserialize<List<Person>>(personsJson);
+
+
+
+
+
 
 			ViewBag.CurrentSearchBy = searchBy;
 			ViewBag.CurrentSearchString = searchString;

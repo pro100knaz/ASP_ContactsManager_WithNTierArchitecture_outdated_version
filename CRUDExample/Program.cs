@@ -1,3 +1,5 @@
+using Enities;
+using Microsoft.EntityFrameworkCore;
 using ServiceContracts;
 using Services;
 
@@ -6,6 +8,11 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddSingleton<ICountriesService, CountryService>();
 builder.Services.AddSingleton<IPersonService, PersonService>();
+
+builder.Services.AddDbContext<PersonsDbContext>(options =>
+{
+	options.UseSqlServer(builder.Configuration.GetConnectionString("PersonDb")); //явное укаазание тспользоание типа бд
+});
 
 var app = builder.Build();
 
@@ -21,6 +28,4 @@ app.UseRouting();
 app.MapControllers();
 
 
-
-
-app.Run();
+app.Run(); 
