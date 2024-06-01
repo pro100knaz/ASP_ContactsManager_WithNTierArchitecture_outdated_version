@@ -90,6 +90,7 @@
 				{"ColumnName", nameof(PersonResponse.ReceiveNewsLatters)},
 				{"DisplayName", "Receive New Laters"}
 				})
+				<th>Options</th>
 
 
 				<!-- #region name -->
@@ -143,6 +144,10 @@
 					<td style="width:10%">@person.Country</td>
 					<td style="width:10%">@person.Address</td>
 					<td style="width:20%">@person.ReceiveNewsLatters.ToString()</td>
+					<td style="width:20%" class="flex">
+						<a asp-action="edit" asp-controller="persons" class="button button-green-back" asp-route-personID="@person.Id">Edit</a>
+						<a asp-action="delete" asp-controller="persons" class="button button-red-back" asp-route-personID="@person.Id">Delete</a>
+					</td>
 				</tr>
 			}
 		</tbody>

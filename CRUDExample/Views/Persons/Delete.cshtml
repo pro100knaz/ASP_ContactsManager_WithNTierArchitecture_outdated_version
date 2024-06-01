@@ -1,0 +1,65 @@
+﻿@model PersonResponse
+
+@{
+	ViewBag.Title = "Delete Person";
+}
+
+<a asp-action="index" asp-controller="persons" class="link-hover"> Back To Persons List </a>
+
+<h2> Delete Person</h2>
+
+<div class="center-box">
+	<form asp-action="delete" asp-controller="persons" method="post">
+		<input type="hidden" asp-for="Id"/>
+		<div class="container">
+			@*PersonName*@
+			<div class="form-field flex">
+				<div class="w-25">
+					<label asp-for="PersonName" class="form-label">Person Name</label>
+				</div>
+
+				<div class="flex-1">
+					<input disabled="disabled" asp-for="PersonName" class="form-input" /> @*Asp-for и валидация и привязка данных автоматически*@
+					@* <span asp-validation-for="PersonName" class="text-red"></span> *@
+				</div>
+			</div>
+
+			@*Email*@
+
+			<div class="form-field flex">
+				<div class="w-25">
+					<label asp-for="Email" class="form-label">Email</label>
+				</div>
+
+				<div class="flex-1">
+					<input disabled="disabled" asp-for="Email" class="form-input" /> @*type="email"  OR Указать атрибут нужно типо прямо в модели (нужно для валидациии т.к. по дефолту это текст)*@
+				@* 	<span asp-validation-for="Email" class="text-red"></span> *@
+				</div>
+			</div>
+
+			@*Sawddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddnt*@
+
+			<div class="form-field flex">
+				<div class="w-25">
+					<label asp-for="DateOfBirth" class="form-label">Date Of Birth</label>
+				</div>
+
+				<div class="flex-1">
+					<input disabled="disabled" asp-for="DateOfBirth" type="date" class="form-input" /> @*Same as the Name of The Propery To maKE IT Little Bit More Convenient*@
+				</div>
+			</div>
+		
+			@*Sawddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddnt*@
+			<div class="form-field flex">
+				<div class="w-25">
+				</div>
+				<div class="flex-1">
+					<button class="button button-red-back">Delete</button>
+				</div>
+			</div>
+			@*Sawddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddnt*@
+
+		</div>
+		<button>Submit</button>
+	</form>
+</div>

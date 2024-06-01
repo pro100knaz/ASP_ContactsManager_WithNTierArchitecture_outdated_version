@@ -12,7 +12,10 @@
 <body>
 	<div class="container">
 		<div class="navbar">
-			<div class="navbar-brand">CRUD Demo</div>
+			<div class="navbar-brand">
+				<img src="~/logo.png" width="100px" asp-append-version="true"> @* asp-append-version="true" - Необходимо для того чтобы обнавлять кэш в случае изменения состояние обьекта(его модификации и изменения) *@
+				</img>
+				</div>
 			<ul>
 				<li>
 					<a href="~/persons/index"> Persons </a>

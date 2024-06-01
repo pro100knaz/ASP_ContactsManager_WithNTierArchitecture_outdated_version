@@ -285,7 +285,7 @@ namespace Services
 
 			Person resultPerson = persons.FirstOrDefault(p => p.Id == x.Id)!;
 
-			persons.RemoveAll(temp => resultPerson.Id == id);
+			persons.Remove(resultPerson);
 			return true;
 		}
 	}
