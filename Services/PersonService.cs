@@ -278,5 +278,14 @@ namespace Services
 
 			return true;
 		}
+
+		public async Task<MemoryStream> GetPersonCSV()
+		{
+			MemoryStream memoryStream = new MemoryStream();
+			StreamWriter streamWriter = new StreamWriter(memoryStream);
+
+
+			var persons = await GetAllPersons();
+		}
 	}
 }
