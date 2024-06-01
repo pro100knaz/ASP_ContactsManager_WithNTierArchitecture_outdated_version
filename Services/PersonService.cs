@@ -61,7 +61,7 @@ namespace Services
 
 
 
-			//if (addPerson.PersonName is null)
+			//if (addPerson.PersonName is null) 
 			//{
 			//	throw new ArgumentException(nameof(addPerson.PersonName));
 			//}
@@ -69,8 +69,8 @@ namespace Services
 			var person = addPerson.ToPerson();
 			person.Id = Guid.NewGuid();
 
-			var x = DbContext.sp_InsertPerson(person);
-			//DbContext.Persons.Add(person);
+			//var x = DbContext.sp_InsertPerson(person);
+			DbContext.Persons.Add(person);
 
 
 			DbContext.SaveChanges();
