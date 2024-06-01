@@ -32,7 +32,7 @@ namespace ServiceContracts.DTO.PersonDto
 			Address = this.Address,
 			Email = this.Email,
 			DateOfBirth = this.DateOfBirth,
-			 
+			CountryId = this.CountryId,
 			ReceiveNewsLatters = this.ReceiveNewsLatters,
 			Gender = this.Gender.ToString(),
 		};

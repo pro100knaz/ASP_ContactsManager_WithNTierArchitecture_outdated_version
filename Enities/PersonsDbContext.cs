@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,5 +42,55 @@ namespace Enities
 			}
 
 		}
+
+		public IQueryable<Person> sp_GetAllPersons()
+		{
+			return Persons.FromSqlRaw("EXECUTE [dbo].[GetAllPersons]");
+		}
+
+		public int sp_InsertPerson(Person person)
+		{
+			SqlParameter[] sqlParameters = new SqlParameter[]
+			{
+				new SqlParameter("@Id", person.Id),
+				new SqlParameter("@PersonName", person.PersonName),
+				new SqlParameter("@Email", person.Email),
+				new SqlParameter("@DateOfBirth", person.DateOfBirth),
+				new SqlParameter("@Gender", person.Gender),
+				new SqlParameter("@CountryId", person.CountryId),
+				new SqlParameter("@Address", person.Address),
+				new SqlParameter("@ReceiveNewsLatters", person.ReceiveNewsLatters),
+			};
+
+			/*
+			 
+			 @Id uniqueidentifier, @PersonName nvarchar(40), @Email nvarchar(40), @DateOfBirth datetime2(7), 
+@Gender varchar(10), @CountryId uniqueidentifier, @Address nvarchar(200), @ReceiveNewsLatters bit)
+        AS BEGIN
+          INSERT INTO [dbo].[Persons](Id, PersonName, Email, DateOfBirth, Gender, CountryId, Address, ReceiveNewsLatters) VALUES (@Id, @PersonName, @Email, @DateOfBirth, @Gender, @CountryId, @Address, @ReceiveNewsLatters)
+        END
+			 
+			  public int sp_InsertPerson(Person person)
+    {
+      SqlParameter[] parameters = new SqlParameter[] { 
+        new SqlParameter("@PersonID", person.PersonID),
+        new SqlParameter("@PersonName", person.PersonName),
+        new SqlParameter("@Email", person.Email),
+        new SqlParameter("@DateOfBirth", person.DateOfBirth),
+        new SqlParameter("@Gender", person.Gender),
+        new SqlParameter("@CountryID", person.CountryID),
+        new SqlParameter("@Address", person.Address),
+        new SqlParameter("@ReceiveNewsLetters", person.ReceiveNewsLetters)
+      };
+
+      return Database.ExecuteSqlRaw("EXECUTE [dbo].[InsertPerson] @PersonID, @PersonName, @Email, @DateOfBirth, @Gender, @CountryID, @Address, @ReceiveNewsLetters", parameters);
+    }
+
+
+			 */
+			return Database.ExecuteSqlRaw("EXECUTE [dbo].[InsertPerson] @Id, @PersonName, @Email, @DateOfBirth, @Gender, @CountryId, @Address, @ReceiveNewsLatters ", sqlParameters);
+
+		}
+
     }
 }

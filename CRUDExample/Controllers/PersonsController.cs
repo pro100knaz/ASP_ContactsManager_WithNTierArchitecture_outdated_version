@@ -39,21 +39,6 @@ namespace CRUDExample.Controllers
 			};
 
 
-			string countriesJson = System.IO.File.ReadAllText("countries.json");
-
-			var countriesFronJosn = JsonSerializer.Deserialize<List<Country>>(countriesJson).ToArray();
-
-			//modelBuilder.Entity<Country>().HasData(countries.ToArray());
-
-			string personsJson = System.IO.File.ReadAllText("persons.json");
-
-			var personsFromHJson = JsonSerializer.Deserialize<List<Person>>(personsJson);
-
-
-
-
-
-
 			ViewBag.CurrentSearchBy = searchBy;
 			ViewBag.CurrentSearchString = searchString;
 

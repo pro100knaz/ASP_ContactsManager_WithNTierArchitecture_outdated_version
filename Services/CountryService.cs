@@ -6,19 +6,26 @@ namespace Services
 {
 	public class CountryService : ICountriesService
 	{
-		List<Country> _countries;
-		public CountryService(bool initialize = true)
+		private readonly PersonsDbContext dbContext;
+
+		//
+		//List<Country> _countries;
+		public CountryService(PersonsDbContext dbContext /*bool initialize = true*/)
 		{
-			_countries = new List<Country>();
-			if (initialize)
-			{
-				for (int i = 1; i < 10; i++)
-				{
-					var z = AddCountry(new()
-					{ CountryName = $"Country Number = {i}" });
-				}
+			//_countries = new List<Country>();
+
+
+			//if (initialize)
+			//{
+			//	for (int i = 1; i < 10; i++)
+			//	{
+			//		var z = AddCountry(new()
+			//		{ CountryName = $"Country Number = {i}" });
+			//	}
 		
-			}
+			//}
+
+			this.dbContext = dbContext;
 		}
 		public CountryResponse AddCountry(CountryAddRequest? countryAddRequest)
 		{
@@ -41,34 +48,30 @@ namespace Services
 
 			country.CountryId = Guid.NewGuid();
 
-			if (_countries.Where(c => c.Name == countryAddRequest.CountryName).Count() > 0)
+			if (dbContext.Countries.Count(c => c.Name == countryAddRequest.CountryName) > 0)
 			{
 				throw new ArgumentNullException(nameof(countryAddRequest.CountryName));
 			}
 
-			_countries.Add(country);
+			dbContext.Countries.Add(country);
+			dbContext.SaveChanges();
 
 			return country.ToCountryResponse();
 		}
 
 		public List<CountryResponse> GetAllCountrise()
 		{
-			List<CountryResponse> responseList = new List<CountryResponse>();
-
-			foreach (Country country in _countries)
-			{
-				responseList.Add(country.ToCountryResponse());
-			}
-
-			return _countries.Select(country => country.ToCountryResponse()).ToList();
-
-
+			return dbContext.Countries.Select(country => country.ToCountryResponse()).ToList();
 
 		}
 
 		public CountryResponse? GetCountryById(Guid? countryId)
 		{
-			var result = _countries.FirstOrDefault(c => c.CountryId == countryId);
+			if(countryId == null)
+				return null;
+
+
+			var result = dbContext.Countries.FirstOrDefault(c => c.CountryId == countryId);
 
 			return result?.ToCountryResponse() ?? null;
 		}

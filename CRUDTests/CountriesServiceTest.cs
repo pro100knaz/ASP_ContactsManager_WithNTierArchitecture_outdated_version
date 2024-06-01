@@ -1,4 +1,6 @@
-﻿using ServiceContracts;
+﻿using Enities;
+using Microsoft.EntityFrameworkCore;
+using ServiceContracts;
 using ServiceContracts.DTO;
 using Services;
 using System;
@@ -15,7 +17,8 @@ namespace CRUDTests
 
 		public CountriesServiceTest()
 		{
-			_countriesService = new CountryService(false);
+			_countriesService = new CountryService(new Enities.PersonsDbContext(new 
+				DbContextOptionsBuilder<PersonsDbContext>().Options));
 		}
 		// null - throw ARGUM
 

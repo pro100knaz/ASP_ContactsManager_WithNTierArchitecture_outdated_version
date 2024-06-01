@@ -15,40 +15,26 @@ namespace Services
 {
 	public class PersonService : IPersonService
 	{
-		object f = new object();
-		private readonly List<Person> persons;
+		private readonly PersonsDbContext DbContext;
 		private readonly ICountriesService countriesService;
-		public PersonService(bool initialize = true)
+
+		public PersonService(PersonsDbContext context, ICountriesService countriesService)
 		{
-			persons = new List<Person>();
-			countriesService = new CountryService(true);
-			if (initialize)
-			{
-				var z = countriesService.GetAllCountrise();
-				for (int i = 1; i < 50; i++)
-				{
-					var temp = AddPerson(new PersonAddRequest()
-					{
-						Address = $"Address {i}",
-						CountryId = z[i % 5].CountryId,
-						DateOfBirth = DateTime.Now,
-						Email = $"null{i + i % 3}@mail.ru",
-						Gender = GenderOptions.Male,
-						PersonName = $"Name i + 120 =  {i + 120}",
-						ReceiveNewsLatters = Convert.ToBoolean(i % 2),
-					});
-				}
-			}
+			this.DbContext = context;
+			this.countriesService = countriesService;
 		}
 
-		private PersonResponse? ConvertPersonToPersonResponse(Person? person)
+		private PersonResponse ConvertPersonToPersonResponse(Person? person)
 		{
 			if (person == null)
-				return null;
+				return new PersonResponse();
+
 			PersonResponse personResponse = person.ToPersonResponse();
 			personResponse.Country = countriesService.GetCountryById(person.CountryId)?.CountryName;
 			return personResponse;
 		}
+
+
 
 		public PersonResponse AddPerson(PersonAddRequest? addPerson)
 		{
@@ -83,7 +69,11 @@ namespace Services
 			var person = addPerson.ToPerson();
 			person.Id = Guid.NewGuid();
 
-			persons.Add(person);
+			var x = DbContext.sp_InsertPerson(person);
+			//DbContext.Persons.Add(person);
+
+
+			DbContext.SaveChanges();
 
 			return ConvertPersonToPersonResponse(person) ?? throw new Exception();
 
@@ -95,20 +85,23 @@ namespace Services
 
 		public List<PersonResponse> GetAllPersons()
 		{
-			List<PersonResponse> personResponses = new List<PersonResponse>();
-			personResponses = persons.Select(c => (ConvertPersonToPersonResponse(c) ?? throw new Exception()))?.ToList() ?? throw new Exception();
+			//List<PersonResponse> personResponses = new List<PersonResponse>();
+			var personResponses = DbContext.Persons.ToList().Select(c => (ConvertPersonToPersonResponse(c))).ToList();
+			
+			var x = DbContext.sp_GetAllPersons().ToList();
 			//{
 			//	var res = new PersonResponse();
 			//	res = c.ToPersonResponse();
 			//	return c.ToPersonResponse();
 			//}
 
-			return personResponses ?? throw new Exception();
+			return personResponses ?? new List<PersonResponse>();
 		}
 
 		public PersonResponse? GetPerson(Guid? id)
 		{
-			return (id) == null ? null : ConvertPersonToPersonResponse(persons?.FirstOrDefault(c => c.Id == id) ?? null);
+
+			return (id) == null ? null : ConvertPersonToPersonResponse(DbContext.Persons.FirstOrDefault(c => c.Id == id));
 		}
 
 		public List<PersonResponse> GetFilteredPerson(string searchBy, string? searchString)
@@ -251,7 +244,7 @@ namespace Services
 
 			ValidationHelper.ModelValidation(updatePerson);
 
-			Person? matchingPerson = persons.FirstOrDefault(temp => temp.Id == updatePerson.PersonId);
+			Person? matchingPerson = DbContext.Persons.FirstOrDefault(temp => temp.Id == updatePerson.PersonId);
 
 			if (matchingPerson is null)
 			{
@@ -268,6 +261,7 @@ namespace Services
 			matchingPerson.Email = updatePerson.Email;
 			matchingPerson.ReceiveNewsLatters = updatePerson.ReceiveNewsLatters;
 
+			DbContext.SaveChanges();
 
 			return ConvertPersonToPersonResponse(matchingPerson) ?? throw new Exception();
 		}
@@ -283,9 +277,15 @@ namespace Services
 			if (x is null)
 				return false;
 
-			Person resultPerson = persons.FirstOrDefault(p => p.Id == x.Id)!;
+			Person? resultPerson = DbContext.Persons.FirstOrDefault(p => p.Id == x.Id);
 
-			persons.Remove(resultPerson);
+			if (resultPerson == null)
+				return false;
+
+			DbContext.Persons.Remove(
+				DbContext.Persons.First(p => p.Id == id));
+			DbContext.SaveChanges();
+
 			return true;
 		}
 	}

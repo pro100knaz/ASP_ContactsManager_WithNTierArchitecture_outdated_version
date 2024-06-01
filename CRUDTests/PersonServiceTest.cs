@@ -4,6 +4,7 @@ using ServiceContracts.DTO;
 using ServiceContracts.DTO.PersonDto;
 using ServiceContracts.Enums;
 using Services;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,8 +23,11 @@ namespace CRUDTests
 
 		public PersonServiceTest(ITestOutputHelper testOutputHelper)
 		{
-			personService = new PersonService(false);
-			countryService = new CountryService(false);
+			countryService = new CountryService(new Enities.PersonsDbContext(new
+				DbContextOptionsBuilder<PersonsDbContext>().Options));
+
+			personService = new PersonService(new PersonsDbContext(
+				new DbContextOptionsBuilder<PersonsDbContext>().Options), countryService);
 			this.testOutputHelper = testOutputHelper;
 		}
 		#region  AddPerson
