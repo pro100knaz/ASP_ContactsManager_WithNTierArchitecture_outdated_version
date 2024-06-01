@@ -28,5 +28,9 @@ namespace Enities
 
 
 		public string? TIN { get; set; }
+
+		[ForeignKey("CountryId")]
+		public Country? Country { get; set; }
+
 	}
 }

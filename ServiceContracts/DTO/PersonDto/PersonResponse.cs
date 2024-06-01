@@ -70,12 +70,25 @@ namespace ServiceContracts.DTO.PersonDto
 				Email = person.Email,
 				DateOfBirth = person.DateOfBirth,
 				Gender = person.Gender,
+				Country = person.Country?.Name,
 				CountryId = person.CountryId,
 				Address = person.Address,
 				ReceiveNewsLatters = person.ReceiveNewsLatters,
 				Age = person.DateOfBirth == null ? null : Math.Round(((DateTime.Now - person.DateOfBirth.Value).TotalDays) / 356.25)
 			};
 		}
+
+		//public static PersonResponse ConvertPersonToPersonResponse(Person? person)
+		//{
+		//	if (person == null)
+		//		return new PersonResponse();
+
+		//	PersonResponse personResponse = person.ToPersonResponse();
+		//	personResponse.Country = person.Country?.Name;
+		//	return personResponse;
+		//}
+
+
 	}
 
 }

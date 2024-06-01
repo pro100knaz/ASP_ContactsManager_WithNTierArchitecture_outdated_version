@@ -28,13 +28,13 @@ namespace Enities
 
 			string countriesJson = File.ReadAllText("countries.json");
 
-			var countries = JsonSerializer.Deserialize<List<Country>>(countriesJson);
+			var countries = JsonSerializer.Deserialize<List<Country>>(countriesJson)!;
 
 				modelBuilder.Entity<Country>().HasData(countries.ToArray());
 
 			string personsJson = File.ReadAllText("persons.json");
 
-			var persons = JsonSerializer.Deserialize<List<Person>>(personsJson);
+			var persons = JsonSerializer.Deserialize<List<Person>>(personsJson)!;
 
 			foreach (Person person in persons)
 			{
@@ -49,7 +49,15 @@ namespace Enities
 			//modelBuilder.Entity<Person>().HasIndex(temp => temp.TIN).IsUnique();
 
 			modelBuilder.Entity<Person>().ToTable(t => t.HasCheckConstraint("CHK_TIN", "len([TaxIdentificationNumber]) = 8"));
-			
+
+
+			modelBuilder.Entity<Person>(entity =>
+			{
+				entity.HasOne<Country>(c => c.Country)
+				.WithMany(p => p.Persons)
+				.HasForeignKey(p => p.CountryId);
+			}); //Необязательно
+
 		}
 
 		public IQueryable<Person> sp_GetAllPersons()

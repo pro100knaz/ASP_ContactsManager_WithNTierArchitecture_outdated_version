@@ -1,4 +1,5 @@
 ﻿using Enities;
+using Microsoft.EntityFrameworkCore;
 using ServiceContracts;
 using ServiceContracts.DTO;
 
@@ -27,7 +28,7 @@ namespace Services
 
 			this.dbContext = dbContext;
 		}
-		public CountryResponse AddCountry(CountryAddRequest? countryAddRequest)
+		public async Task<CountryResponse> AddCountry(CountryAddRequest? countryAddRequest)
 		{
 
 			if (countryAddRequest is null)
@@ -48,30 +49,30 @@ namespace Services
 
 			country.CountryId = Guid.NewGuid();
 
-			if (dbContext.Countries.Count(c => c.Name == countryAddRequest.CountryName) > 0)
+			if (await dbContext.Countries.CountAsync(c => c.Name == countryAddRequest.CountryName) > 0)
 			{
 				throw new ArgumentNullException(nameof(countryAddRequest.CountryName));
 			}
 
-			dbContext.Countries.Add(country);
-			dbContext.SaveChanges();
+			await dbContext.Countries.AddAsync(country);
+			await dbContext.SaveChangesAsync();
 
 			return country.ToCountryResponse();
 		}
 
-		public List<CountryResponse> GetAllCountrise()
+		public async Task<List<CountryResponse>> GetAllCountrise()
 		{
-			return dbContext.Countries.Select(country => country.ToCountryResponse()).ToList();
+			return await dbContext.Countries.Select(country => country.ToCountryResponse()).ToListAsync();
 
 		}
 
-		public CountryResponse? GetCountryById(Guid? countryId)
+		public async Task<CountryResponse?> GetCountryById(Guid? countryId)
 		{
 			if(countryId == null)
 				return null;
 
 
-			var result = dbContext.Countries.FirstOrDefault(c => c.CountryId == countryId);
+			var result = await dbContext.Countries.FirstOrDefaultAsync(c => c.CountryId == countryId);
 
 			return result?.ToCountryResponse() ?? null;
 		}
