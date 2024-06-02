@@ -35,7 +35,7 @@ namespace CRUDTests
 
 			//var dbContext = mockDb.Object;
 
-			_countriesService = new CountryService(mockDb.Object);
+			_countriesService = new CountryService(null);
 		}
 		// null - throw ARGUM
 

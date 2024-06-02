@@ -12,9 +12,9 @@ namespace RepositoryContracts.interfaces
 	{
 		Task<Person> AddPerson(Person person);
 
-		Task<IEnumerable<Person>> GetAllPersons();
+		Task<List<Person>> GetAllPersons();
 
-		Task<IEnumerable<Person>> GetFilteredPerson(Expression<Func<Person, bool>> predicate);
+		Task<List<Person>> GetFilteredPerson(Expression<Func<Person, bool>> predicate);
 
 		Task<Person?> GetPersonById(Guid id);
 
@@ -22,7 +22,7 @@ namespace RepositoryContracts.interfaces
 
 		Task<bool> DeletePersonByPersonId(Guid id);
 
-		Task<Person> UpdatePersonByPersonId(Person person);
+		Task<Person> UpdatePersonByPerson(Person person);
 
 	}
 }

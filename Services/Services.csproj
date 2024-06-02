@@ -8,6 +8,8 @@
 
   <ItemGroup>
 	   <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+	   <ProjectReference Include="..\RepositoryContracts\RepositoryContracts.csproj" />
+	   <ProjectReference Include="..\RepositoryImplementation\RepositoriesImplementation.csproj" />
     <ProjectReference Include="..\ServiceContracts\ServiceContracts.csproj" />
 	  <PackageReference Include="CsvHelper" Version="32.0.3" />
 	  <PackageReference Include="EPPlus" Version="7.1.3" />

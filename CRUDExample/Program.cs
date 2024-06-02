@@ -6,6 +6,10 @@ using Services;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
+
+builder.Services.AddScoped<ICountriesService, CountryService>();
+builder.Services.AddScoped<IPersonService, PersonService>();
+
 builder.Services.AddScoped<ICountriesService, CountryService>();
 builder.Services.AddScoped<IPersonService, PersonService>();
 

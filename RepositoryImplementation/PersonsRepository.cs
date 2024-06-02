@@ -34,13 +34,13 @@ namespace RepositoriesImplementation
 			return rowsDeleted > 0;
 		}
 
-		public async Task<IEnumerable<Person>> GetAllPersons()
+		public async Task<List<Person>> GetAllPersons()
 		{
 			return await applicationDbContext.Persons.AsNoTracking().Include("Country").ToListAsync();
 
 		}
 
-		public async Task<IEnumerable<Person>> GetFilteredPerson(Expression<Func<Person, bool>> predicate)
+		public async Task<List<Person>> GetFilteredPerson(Expression<Func<Person, bool>> predicate)
 		{
 			return await applicationDbContext.Persons.AsNoTracking().Include("Country").Where(predicate).ToListAsync();
 		}
@@ -55,7 +55,7 @@ namespace RepositoriesImplementation
 			throw new NotImplementedException();
 		}
 
-		public async Task<Person> UpdatePersonByPersonId(Person person)
+		public async Task<Person> UpdatePersonByPerson(Person person)
 		{
 			Person? matchingPerson  = await applicationDbContext.Persons.FirstOrDefaultAsync(temp => temp.Id == person.Id);
 

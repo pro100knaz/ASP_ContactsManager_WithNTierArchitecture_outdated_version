@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace RepositoriesImplementation
 {
-	public class CountriesRepository : ICountryRepository
+	public class CountriesRepository : ICountriesRepository
 	{
 		private readonly ApplicationDbContext applicationDbContext;
 
@@ -25,7 +25,7 @@ namespace RepositoriesImplementation
 			return country;
 		}
 
-		public async Task<IEnumerable<Country>> GetCountries()
+		public async Task<List<Country>> GetCountries()
 		{
 			return await applicationDbContext.Countries.ToListAsync();
 		}

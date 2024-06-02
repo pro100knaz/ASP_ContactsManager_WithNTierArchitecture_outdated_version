@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace RepositoryContracts.interfaces
 {
-	public interface ICountryRepository
+	public interface ICountriesRepository
 	{
 		Task<Country> AddCountry(Country country); 
 
-		Task<IEnumerable<Country>> GetCountries();
+		Task<List<Country>> GetCountries();
 
 		Task<Country?> GetCountryByCountryId(Guid countryId);
 
