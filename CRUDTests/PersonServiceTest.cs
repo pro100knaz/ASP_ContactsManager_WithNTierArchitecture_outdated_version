@@ -117,22 +117,12 @@ namespace CRUDTests
 		public async Task GetPersonById_ValidId()
 		{
 
-			CountryAddRequest countryAddRequest = new CountryAddRequest()
-			{
-				CountryName = "Canada",
-			};
+			CountryAddRequest countryAddRequest = GetAddCountryRequest();
+
 			var CountryResponse = await countryService.AddCountry(countryAddRequest);
 
-			PersonAddRequest personAddRequest = new()
-			{
-				PersonName = "null",
-				Email = "jffgx@sample.com",
-				CountryId = CountryResponse.CountryId,
-				Address = "address",
-				ReceiveNewsLatters = true,
-				DateOfBirth = DateTime.Now,
-				Gender = GenderOptions.Male
-			};
+			PersonAddRequest personAddRequest = GetPersonAddRequest(CountryResponse); 
+
 			PersonResponse personResponseAdd = await personService.AddPerson(personAddRequest);
 
 			PersonResponse? personRequestGet =  await personService.GetPerson(personResponseAdd.Id);
@@ -151,16 +141,14 @@ namespace CRUDTests
 		{
 			var listResp = await personService.GetAllPersons();
 
-			int x = 5;
-
 			Assert.Empty(listResp);
 		}
 
 		[Fact]
 		public async Task GetAllPersons_GetList()
 		{
-			CountryAddRequest countryAddRequest1 = new CountryAddRequest() { CountryName = "USA" };
-			CountryAddRequest countryAddRequest2 = new CountryAddRequest() { CountryName = "Canada" };
+			CountryAddRequest countryAddRequest1 = GetAddCountryRequest();
+			CountryAddRequest countryAddRequest2 = GetAddCountryRequest();
 
 			var c1 = await countryService.AddCountry(countryAddRequest1);
 			var c2 = await countryService.AddCountry(countryAddRequest2);
@@ -168,37 +156,11 @@ namespace CRUDTests
 
 			List<PersonAddRequest> personsAddRequests = new List<PersonAddRequest>()
 			{
-				 new PersonAddRequest()
-				{
-					PersonName = "null",
-					Email = "jffgx@mail.com",
-					Address = "null",
-					DateOfBirth = DateTime.Now,
-					CountryId = c1.CountryId,
-					Gender = GenderOptions.Male,
-					ReceiveNewsLatters = true
-				},
-				 new PersonAddRequest()
-				{
-					PersonName = "QWE",
-					Email = "jfQWEfgx@mail.com",
-					Address = "QWEQ",
-					DateOfBirth = DateTime.Now,
-					CountryId = c2.CountryId,
-					Gender = GenderOptions.Male,
-					ReceiveNewsLatters = true
-				},
-
-				  new PersonAddRequest()
-				{
-					PersonName = "QQWEWE",
-					Email = "jfQWEfgQEQx@mail.com",
-					Address = "QWQWEEQ",
-					DateOfBirth = DateTime.Now,
-					CountryId = c1.CountryId,
-					Gender = GenderOptions.Male,
-					ReceiveNewsLatters = true
-				},
+				 GetPersonAddRequest(c1),
+				 GetPersonAddRequest(c2),
+				 GetPersonAddRequest(c1),
+				 GetPersonAddRequest(c1),
+				 GetPersonAddRequest(c1),
 			};
 
 			List<PersonResponse> listRespFromAdd = new List<PersonResponse>();
@@ -240,45 +202,20 @@ namespace CRUDTests
 		[Fact]
 		public async Task GetFilteredPersons_EmptySearchList()
 		{
-			CountryAddRequest countryAddRequest1 = new CountryAddRequest() { CountryName = "USA" };
-			CountryAddRequest countryAddRequest2 = new CountryAddRequest() { CountryName = "Canada" };
+			CountryAddRequest countryAddRequest1 = GetAddCountryRequest();
+			CountryAddRequest countryAddRequest2 = GetAddCountryRequest();
 
 			var c1 = await countryService.AddCountry(countryAddRequest1);
 			var c2 = await countryService.AddCountry(countryAddRequest2);
 
+
 			List<PersonAddRequest> personsAddRequests = new List<PersonAddRequest>()
 			{
-				 new PersonAddRequest()
-				{
-					PersonName = "null",
-					Email = "jffgx@mail.com",
-					Address = "null",
-					DateOfBirth = DateTime.Now,
-					CountryId = c1.CountryId,
-					Gender = GenderOptions.Male,
-					ReceiveNewsLatters = true
-				},
-				 new PersonAddRequest()
-				{
-					PersonName = "QWE",
-					Email = "jfQWEfgx@mail.com",
-					Address = "QWEQ",
-					DateOfBirth = DateTime.Now,
-					CountryId = c2.CountryId,
-					Gender = GenderOptions.Male,
-					ReceiveNewsLatters = true
-				},
-
-				  new PersonAddRequest()
-				{
-					PersonName = "QQWEWE",
-					Email = "jfQWEfgQEQx@mail.com",
-					Address = "QWQWEEQ",
-					DateOfBirth = DateTime.Now,
-					CountryId = c1.CountryId,
-					Gender = GenderOptions.Male,
-					ReceiveNewsLatters = true
-				},
+				 GetPersonAddRequest(c1),
+				 GetPersonAddRequest(c2),
+				 GetPersonAddRequest(c1),
+				 GetPersonAddRequest(c1),
+				 GetPersonAddRequest(c1),
 			};
 
 			List<PersonResponse> listRespFromAdd = new List<PersonResponse>();
@@ -312,45 +249,20 @@ namespace CRUDTests
 		[Fact]
 		public async Task GetFilteredPersons_ValidSearchList()
 		{
-			CountryAddRequest countryAddRequest1 = new CountryAddRequest() { CountryName = "USA" };
-			CountryAddRequest countryAddRequest2 = new CountryAddRequest() { CountryName = "Canada" };
+			CountryAddRequest countryAddRequest1 = GetAddCountryRequest();
+			CountryAddRequest countryAddRequest2 = GetAddCountryRequest();
 
 			var c1 = await countryService.AddCountry(countryAddRequest1);
 			var c2 = await countryService.AddCountry(countryAddRequest2);
 
+
 			List<PersonAddRequest> personsAddRequests = new List<PersonAddRequest>()
 			{
-				 new PersonAddRequest()
-				{
-					PersonName = "null",
-					Email = "jffgx@mail.com",
-					Address = "null",
-					DateOfBirth = DateTime.Now,
-					CountryId = c1.CountryId,
-					Gender = GenderOptions.Male,
-					ReceiveNewsLatters = true
-				},
-				 new PersonAddRequest()
-				{
-					PersonName = "QWE",
-					Email = "jfQWEfgx@mail.com",
-					Address = "QWEQ",
-					DateOfBirth = DateTime.Now,
-					CountryId = c2.CountryId,
-					Gender = GenderOptions.Male,
-					ReceiveNewsLatters = true
-				},
-
-				  new PersonAddRequest()
-				{
-					PersonName = "QQWEWE",
-					Email = "jfQWEfgQEQx@mail.com",
-					Address = "QWQWEEQ",
-					DateOfBirth = DateTime.Now,
-					CountryId = c1.CountryId,
-					Gender = GenderOptions.Male,
-					ReceiveNewsLatters = true
-				},
+				 GetPersonAddRequest(c1),
+				 GetPersonAddRequest(c2),
+				 GetPersonAddRequest(c1),
+				 GetPersonAddRequest(c1),
+				 GetPersonAddRequest(c1),
 			};
 
 			List<PersonResponse> listRespFromAdd = new List<PersonResponse>();
@@ -393,45 +305,20 @@ namespace CRUDTests
 		[Fact]
 		public async Task GetSortedPersons_ValidData()
 		{
-			CountryAddRequest countryAddRequest1 = new CountryAddRequest() { CountryName = "USA" };
-			CountryAddRequest countryAddRequest2 = new CountryAddRequest() { CountryName = "Canada" };
+			CountryAddRequest countryAddRequest1 = GetAddCountryRequest();
+			CountryAddRequest countryAddRequest2 = GetAddCountryRequest();
 
 			var c1 = await countryService.AddCountry(countryAddRequest1);
 			var c2 = await countryService.AddCountry(countryAddRequest2);
 
+
 			List<PersonAddRequest> personsAddRequests = new List<PersonAddRequest>()
 			{
-				 new PersonAddRequest()
-				{
-					PersonName = "null",
-					Email = "jffgx@mail.com",
-					Address = "null",
-					DateOfBirth = DateTime.Now,
-					CountryId = c1.CountryId,
-					Gender = GenderOptions.Male,
-					ReceiveNewsLatters = true
-				},
-				 new PersonAddRequest()
-				{
-					PersonName = "QWE",
-					Email = "jfQWEfgx@mail.com",
-					Address = "QWEQ",
-					DateOfBirth = DateTime.Now,
-					CountryId = c2.CountryId,
-					Gender = GenderOptions.Male,
-					ReceiveNewsLatters = true
-				},
-
-				  new PersonAddRequest()
-				{
-					PersonName = "QQWEWE",
-					Email = "jfQWEfgQEQx@mail.com",
-					Address = "QWQWEEQ",
-					DateOfBirth = DateTime.Now,
-					CountryId = c1.CountryId,
-					Gender = GenderOptions.Male,
-					ReceiveNewsLatters = true
-				},
+				 GetPersonAddRequest(c1),
+				 GetPersonAddRequest(c2),
+				 GetPersonAddRequest(c1),
+				 GetPersonAddRequest(c1),
+				 GetPersonAddRequest(c1),
 			};
 
 			List<PersonResponse> listRespFromAdd = new List<PersonResponse>();
@@ -496,45 +383,20 @@ namespace CRUDTests
 		public async Task UpdatePerson_PersonNameIsNull()
 		{
 			#region adding
-CountryAddRequest countryAddRequest1 = new CountryAddRequest() { CountryName = "USA" };
-			CountryAddRequest countryAddRequest2 = new CountryAddRequest() { CountryName = "Canada" };
+			CountryAddRequest countryAddRequest1 = GetAddCountryRequest();
+			CountryAddRequest countryAddRequest2 = GetAddCountryRequest();
 
 			var c1 = await countryService.AddCountry(countryAddRequest1);
 			var c2 = await countryService.AddCountry(countryAddRequest2);
 
+
 			List<PersonAddRequest> personsAddRequests = new List<PersonAddRequest>()
 			{
-				 new PersonAddRequest()
-				{
-					PersonName = "null",
-					Email = "jffgx@mail.com",
-					Address = "null",
-					DateOfBirth = DateTime.Now,
-					CountryId = c1.CountryId,
-					Gender = GenderOptions.Male,
-					ReceiveNewsLatters = true
-				},
-				 new PersonAddRequest()
-				{
-					PersonName = "QWE",
-					Email = "jfQWEfgx@mail.com",
-					Address = "QWEQ",
-					DateOfBirth = DateTime.Now,
-					CountryId = c2.CountryId,
-					Gender = GenderOptions.Male,
-					ReceiveNewsLatters = true
-				},
-
-				  new PersonAddRequest()
-				{
-					PersonName = "QQWEWE",
-					Email = "jfQWEfgQEQx@mail.com",
-					Address = "QWQWEEQ",
-					DateOfBirth = DateTime.Now,
-					CountryId = c1.CountryId,
-					Gender = GenderOptions.Male,
-					ReceiveNewsLatters = true
-				},
+				 GetPersonAddRequest(c1),
+				 GetPersonAddRequest(c2),
+				 GetPersonAddRequest(c1),
+				 GetPersonAddRequest(c1),
+				 GetPersonAddRequest(c1),
 			};
 
 			List<PersonResponse> personsResponseList = new List<PersonResponse>();
@@ -559,45 +421,20 @@ CountryAddRequest countryAddRequest1 = new CountryAddRequest() { CountryName = "
 		public async Task UpdatePerson_PersonFullDetails()
 		{
 			#region adding
-			CountryAddRequest countryAddRequest1 = new CountryAddRequest() { CountryName = "USA" };
-			CountryAddRequest countryAddRequest2 = new CountryAddRequest() { CountryName = "Canada" };
+			CountryAddRequest countryAddRequest1 = GetAddCountryRequest();
+			CountryAddRequest countryAddRequest2 = GetAddCountryRequest();
 
 			var c1 = await countryService.AddCountry(countryAddRequest1);
 			var c2 = await countryService.AddCountry(countryAddRequest2);
 
+
 			List<PersonAddRequest> personsAddRequests = new List<PersonAddRequest>()
 			{
-				 new PersonAddRequest()
-				{
-					PersonName = "null",
-					Email = "jffgx@mail.com",
-					Address = "null",
-					DateOfBirth = DateTime.Now,
-					CountryId = c1.CountryId,
-					Gender = GenderOptions.Male,
-					ReceiveNewsLatters = true
-				},
-				 new PersonAddRequest()
-				{
-					PersonName = "QWE",
-					Email = "jfQWEfgx@mail.com",
-					Address = "QWEQ",
-					DateOfBirth = DateTime.Now,
-					CountryId = c2.CountryId,
-					Gender = GenderOptions.Male,
-					ReceiveNewsLatters = true
-				},
-
-				  new PersonAddRequest()
-				{
-					PersonName = "QQWEWE",
-					Email = "jfQWEfgQEQx@mail.com",
-					Address = "QWQWEEQ",
-					DateOfBirth = DateTime.Now,
-					CountryId = c1.CountryId,
-					Gender = GenderOptions.Male,
-					ReceiveNewsLatters = true
-				},
+				 GetPersonAddRequest(c1),
+				 GetPersonAddRequest(c2),
+				 GetPersonAddRequest(c1),
+				 GetPersonAddRequest(c1),
+				 GetPersonAddRequest(c1),
 			};
 
 			List<PersonResponse> personsResponseList = new List<PersonResponse>();
@@ -625,20 +462,12 @@ CountryAddRequest countryAddRequest1 = new CountryAddRequest() { CountryName = "
 		[Fact]
 		public async Task DeletePerson_ValidPersonId()
 		{
+
 			//Arrange 
-			CountryAddRequest countryAddRequest = new() { CountryName = "USA" };
+			CountryAddRequest countryAddRequest = GetAddCountryRequest();
 			var countryResponseAfterAdd = await countryService.AddCountry(countryAddRequest);
 
-			PersonAddRequest personAddRequest = new PersonAddRequest()
-			{
-				PersonName = "null",
-				Email = "jffgx@mail.com",
-				Address = "null",
-				DateOfBirth = DateTime.Now,
-				CountryId = countryResponseAfterAdd.CountryId,
-				Gender = GenderOptions.Male,
-				ReceiveNewsLatters = true
-			};
+			PersonAddRequest personAddRequest = GetPersonAddRequest(countryResponseAfterAdd);
 
 			var personResponseFromAdd = await personService.AddPerson(personAddRequest);
 
@@ -662,5 +491,18 @@ CountryAddRequest countryAddRequest1 = new CountryAddRequest() { CountryName = "
 
 		#endregion
 
+		#region Tool Methods
+
+		private CountryAddRequest GetAddCountryRequest()
+		{
+			return fixture.Build<CountryAddRequest>().Create();
+		}
+		
+		private PersonAddRequest GetPersonAddRequest(CountryResponse countryResponse)
+		{
+			return fixture.Build<PersonAddRequest>().With(temp => temp.Email, "qqweewq@mail.ru").With(temp => temp.CountryId, countryResponse.CountryId).Create();
+		}
+
+		#endregion
 	}
 }
