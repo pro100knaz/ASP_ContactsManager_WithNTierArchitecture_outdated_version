@@ -18,10 +18,10 @@ namespace Services
 {
 	public class PersonService : IPersonService
 	{
-		private readonly PersonsDbContext DbContext;
+		private readonly ApplicationDbContext DbContext;
 		private readonly ICountriesService countriesService;
 
-		public PersonService(PersonsDbContext context, ICountriesService countriesService)
+		public PersonService(ApplicationDbContext context, ICountriesService countriesService)
 		{
 			this.DbContext = context;
 			this.countriesService = countriesService;

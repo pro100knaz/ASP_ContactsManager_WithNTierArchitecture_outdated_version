@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit.Abstractions;
 using Xunit.Sdk;
+using EntityFrameworkCoreMock;
 
 namespace CRUDTests
 {
@@ -23,15 +24,28 @@ namespace CRUDTests
 
 		public PersonServiceTest(ITestOutputHelper testOutputHelper)
 		{
-			countryService = new CountryService(new Enities.PersonsDbContext(new
-				DbContextOptionsBuilder<PersonsDbContext>().Options));
 
-			personService = new PersonService(new PersonsDbContext(
-				new DbContextOptionsBuilder<PersonsDbContext>().Options), countryService);
+			//generate entities
+			var countriesList = new List<Country>() { }; //can add initial data
+			var personsList = new List<Person>() { }; //can add initial data
+														 //Create DbContext mock:
+			var mockDb = new DbContextMock<ApplicationDbContext>(new DbContextOptionsBuilder().Options);
+
+			//Setup DbSet or DbQuery property:
+			var dbContext = mockDb.Object;
+			mockDb.CreateDbSetMock(temp => temp.Countries, countriesList);
+			mockDb.CreateDbSetMock(temp => temp.Persons, personsList);
+
+			
+
+			countryService = new CountryService(dbContext);
+
+			personService = new PersonService(dbContext, countryService);
+
 			this.testOutputHelper = testOutputHelper;
 		}
 		#region  AddPerson
-
+		 
 		[Fact]
 		public async Task AddPerson_Null()
 		{
@@ -66,10 +80,17 @@ namespace CRUDTests
 				Gender = GenderOptions.Male,
 				ReceiveNewsLatters = true
 			};
+
+			testOutputHelper.WriteLine(personAddRequest.ToString());
+
 			// ACT
 			PersonResponse responseFromAdd = await personService.AddPerson(personAddRequest);
 
+			testOutputHelper.WriteLine(responseFromAdd.ToString());
+
 			PersonResponse? responseFromGet = await personService.GetPerson(responseFromAdd.Id);
+
+			testOutputHelper.WriteLine(responseFromGet.ToString());
 			//ASSERT
 			Assert.True(responseFromGet?.Id != Guid.Empty);
 
@@ -77,10 +98,10 @@ namespace CRUDTests
 
 			Assert.Equal(responseFromGet, responseFromAdd);
 
-			Assert.Contains(responseFromAdd, await personService.GetAllPersons());
+			Assert.Contains(responseFromAdd, (await personService.GetAllPersons()).ToList());
 		}
 
-		#endregion
+		#endregion 
 
 		#region GetPersonById
 		[Fact]

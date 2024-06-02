@@ -10,7 +10,7 @@ builder.Services.AddScoped<ICountriesService, CountryService>();
 builder.Services.AddScoped<IPersonService, PersonService>();
 
  
-builder.Services.AddDbContext<PersonsDbContext>(options =>
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
 	options.UseSqlServer(builder.Configuration.GetConnectionString("PersonDb")); //явное укаазание тспользоание типа бд
 });

@@ -1,5 +1,8 @@
-﻿using Enities;
+﻿
+using Enities;
+using EntityFrameworkCoreMock;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using ServiceContracts;
 using ServiceContracts.DTO;
 using Services;
@@ -11,14 +14,28 @@ using System.Threading.Tasks;
 
 namespace CRUDTests
 {
+
+
 	public class CountriesServiceTest
 	{
 		private readonly ICountriesService _countriesService;
 
 		public CountriesServiceTest()
 		{
-			_countriesService = new CountryService(new Enities.PersonsDbContext(new 
-				DbContextOptionsBuilder<PersonsDbContext>().Options));
+
+			//generate entities
+			var countriesList = new List<Country>() { }; //can add initial data
+
+			//Create DbContext mock:
+			var mockDb = new DbContextMock<ApplicationDbContext>(new DbContextOptionsBuilder().Options);
+
+			//Setup DbSet or DbQuery property:
+
+			mockDb.CreateDbSetMock(temp => temp.Countries, countriesList);
+
+			//var dbContext = mockDb.Object;
+
+			_countriesService = new CountryService(mockDb.Object);
 		}
 		// null - throw ARGUM
 
@@ -57,15 +74,16 @@ namespace CRUDTests
 		public async Task AddCountry_CountryNameIsDuplicate()
 		{
 			//Arrange
-			CountryAddRequest? request2 = new() { CountryName = "null" };
-			CountryAddRequest? request1 = new() { CountryName = "null" };
+			CountryAddRequest? request2 = new CountryAddRequest() { CountryName = "null" };
+			CountryAddRequest? request1 = new CountryAddRequest() { CountryName = "null" };
 
 			//Assert
-			await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+			await Assert.ThrowsAsync<ArgumentException>(async () =>
 			{
 				//Act
 				await _countriesService.AddCountry(request2);
-				 await _countriesService.AddCountry(request1);
+				await _countriesService.AddCountry(request1);
+
 			});
 
 		}
@@ -84,7 +102,7 @@ namespace CRUDTests
 			//Assert
 			Assert.True(response.CountryId != Guid.Empty);
 
-			Assert.Contains(response, listResponse);
+			Assert.Equal(new List<CountryResponse> { response }, listResponse);
 		}
 
 		#endregion
@@ -118,16 +136,16 @@ namespace CRUDTests
 
 
 			List<CountryResponse> response_list = new();
-			 
+
 			foreach (var c in country_request_list)
 			{
 				response_list.Add(await _countriesService.AddCountry(c));
 			}
 
-			List<CountryResponse> ListResponse =  await _countriesService.GetAllCountrise();
+			List<CountryResponse> ListResponse = await _countriesService.GetAllCountrise();
 
 
-			foreach(CountryResponse response in ListResponse)
+			foreach (CountryResponse response in ListResponse)
 			{
 				Assert.Contains(response, response_list);
 			}
@@ -154,12 +172,12 @@ namespace CRUDTests
 		public async Task GetCountryById_ProperParam()
 		{
 			//Arrange
-			Guid countryId = Guid.NewGuid();
+			//Guid countryId = Guid.NewGuid();
 
-			 CountryAddRequest?  requestCountry = new CountryAddRequest() 
-			 {
-				 CountryName = "USA"
-			 };
+			CountryAddRequest? requestCountry = new CountryAddRequest()
+			{
+				CountryName = "USA"
+			};
 
 			var responseAdd = await _countriesService.AddCountry(requestCountry);
 

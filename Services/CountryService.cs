@@ -9,11 +9,11 @@ namespace Services
 {
 	public class CountryService : ICountriesService
 	{
-		private readonly PersonsDbContext dbContext;
+		private readonly ApplicationDbContext dbContext;
 
 		//
 		//List<Country> _countries;
-		public CountryService(PersonsDbContext dbContext /*bool initialize = true*/)
+		public CountryService(ApplicationDbContext dbContext /*bool initialize = true*/)
 		{
 			//_countries = new List<Country>();
 
@@ -53,10 +53,10 @@ namespace Services
 
 			if (await dbContext.Countries.CountAsync(c => c.Name == countryAddRequest.CountryName) > 0)
 			{
-				throw new ArgumentNullException(nameof(countryAddRequest.CountryName));
+				throw new ArgumentException(nameof(countryAddRequest.CountryName));
 			}
 
-			await dbContext.Countries.AddAsync(country);
+			 await dbContext.Countries.AddAsync(country);
 			await dbContext.SaveChangesAsync();
 
 			return country.ToCountryResponse();
