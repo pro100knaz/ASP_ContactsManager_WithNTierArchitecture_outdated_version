@@ -14,6 +14,7 @@ using Xunit.Abstractions;
 using Xunit.Sdk;
 using EntityFrameworkCoreMock;
 using AutoFixture;
+using FluentAssertions;
 
 namespace CRUDTests
 {
@@ -52,8 +53,6 @@ namespace CRUDTests
 			this.testOutputHelper = testOutputHelper;
 		}
 
-
-
 		#region  AddPerson
 
 		[Fact]
@@ -62,6 +61,14 @@ namespace CRUDTests
 			//Arrange
 			PersonAddRequest? personAddRequest = null;
 			//ASSERT AND ACT
+
+			Func<Task> action = async () =>
+			{
+				await personService.AddPerson(personAddRequest);
+			};
+			
+			await action.Should().ThrowAsync<ArgumentNullException>();
+
 			await Assert.ThrowsAsync<ArgumentNullException>( async () => await personService.AddPerson(personAddRequest));
 		}
 		[Fact]
@@ -72,7 +79,15 @@ namespace CRUDTests
 				.With(temp => temp.PersonName, null as string)
 				.Create();
 			//ASSERT AND ACT
-			 await Assert.ThrowsAsync<ArgumentException>(async () => await personService.AddPerson(personAddRequest));
+			Func<Task> action = async () =>
+			{
+				await personService.AddPerson(personAddRequest);
+			};
+
+			await action.Should().ThrowAsync<ArgumentException>();
+
+
+			await Assert.ThrowsAsync<ArgumentException>(async () => await personService.AddPerson(personAddRequest));
 		}
 		[Fact]
 		public async Task AddPerson_ProperPersonDetails()
@@ -93,11 +108,22 @@ namespace CRUDTests
 			//ASSERT
 			Assert.True(responseFromGet?.Id != Guid.Empty);
 
+			responseFromGet?.Id.Should().NotBe(Guid.Empty);
+
+
 			Assert.True(responseFromAdd.Id != Guid.Empty);
+
+			responseFromAdd.Id.Should().NotBe(Guid.Empty);
 
 			Assert.Equal(responseFromGet, responseFromAdd);
 
-			var x = (await personService.GetAllPersons()).ToList();
+			responseFromAdd.Should().Be(responseFromGet);
+
+			var x = await personService.GetAllPersons();
+
+
+
+
 			Assert.Contains(responseFromAdd, x);
 		}
 
@@ -110,6 +136,9 @@ namespace CRUDTests
 			Guid? id = null;
 
 			PersonResponse? resp = await personService.GetPerson(id);
+
+
+			resp.Should().BeNull();
 
 			Assert.Null(resp);
 		}
@@ -128,9 +157,13 @@ namespace CRUDTests
 			PersonResponse? personRequestGet =  await personService.GetPerson(personResponseAdd.Id);
 
 			Assert.Equal(personResponseAdd, personRequestGet);
+			personResponseAdd.Should().Be(personRequestGet);
+
 
 			Assert.Contains(personRequestGet, await personService.GetAllPersons());
-			 
+
+			 (await personService.GetAllPersons()).Should().Contain(personRequestGet!);
+			 (await personService.GetAllPersons()).Should().Contain(personResponseAdd);
 		}
 		#endregion
 
@@ -140,6 +173,8 @@ namespace CRUDTests
 		public async Task GetAllPersons_EmptyList()
 		{
 			var listResp = await personService.GetAllPersons();
+
+			listResp.Should().BeEmpty();
 
 			Assert.Empty(listResp);
 		}
@@ -190,10 +225,15 @@ namespace CRUDTests
 
 
 			//Assert
-			foreach (var person in listRespFromGet)
-			{
-				Assert.Contains(person, listRespFromAdd);
-			}
+			//foreach (var person in listRespFromGet)
+			//{
+			//	Assert.Contains(person, listRespFromAdd);
+
+			//	listRespFromAdd.Should().Contain(person);
+			//}
+
+			listRespFromAdd.Should().BeEquivalentTo(listRespFromGet);
+
 		}
 
 		#endregion
@@ -244,7 +284,13 @@ namespace CRUDTests
 			foreach (var person in listRespFromGet)
 			{
 				Assert.Contains(person, listRespFromAdd);
+
+				listRespFromAdd.Should().Contain(person);
 			}
+
+
+		//	listRespFromGet.Should().BeEquivalentTo(personsAddRequests);
+
 		}
 		[Fact]
 		public async Task GetFilteredPersons_ValidSearchList()
@@ -277,8 +323,7 @@ namespace CRUDTests
 				//print person list after add
 				testOutputHelper.WriteLine(person.ToString());
 			}
-			const string searchString = "Q";
-
+			const string searchString = "32";
 
 			//ACT
 			List<PersonResponse> listRespFromGet = await personService.GetFilteredPerson(nameof(Person.PersonName), searchString);
@@ -293,10 +338,16 @@ namespace CRUDTests
 					{
 						testOutputHelper.WriteLine(person.ToString());
 						Assert.Contains(person, listRespFromAdd);
+						listRespFromAdd.Should().Contain(person);
 					}
 				}
-
 			}
+
+			//listRespFromGet.Should().BeEquivalentTo(listRespFromAdd);
+
+			listRespFromGet.Should().OnlyContain(temp => temp.PersonName!.Contains(searchString, StringComparison.OrdinalIgnoreCase));
+
+
 		}
 
 		#endregion 
@@ -348,6 +399,7 @@ namespace CRUDTests
 			{
 				testOutputHelper.WriteLine(listRespFromAdd[i].ToString());
 				Assert.Equal(listRespFromAdd[i], listRespFromGet[i]);
+				listRespFromAdd[i].Should().Be(listRespFromGet[i]);
 			}
 		}
 		#endregion
@@ -361,7 +413,7 @@ namespace CRUDTests
 
 			await Assert.ThrowsAsync<ArgumentNullException>(async () =>
 			{
-				await	personService.UpdatePerson(personUpdateRequest);
+				await personService.UpdatePerson(personUpdateRequest);
 			});
 		}
 
