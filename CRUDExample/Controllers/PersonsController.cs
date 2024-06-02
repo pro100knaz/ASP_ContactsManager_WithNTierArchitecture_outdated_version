@@ -21,6 +21,8 @@ namespace CRUDExample.Controllers
 			this.personService = personService;
 			this.countriesService = countriesService;
 		}
+
+
 		[Route("[action]")]
 		[Route("/")]
 		public async Task<IActionResult> Index(string searchBy, string? searchString,
@@ -50,6 +52,8 @@ namespace CRUDExample.Controllers
 
 			return View(sortedPersons);
 		}
+
+
 		[Route("[action]")]
 		[HttpGet]
 		public async Task<IActionResult> Create()
@@ -91,6 +95,7 @@ namespace CRUDExample.Controllers
 			return RedirectToAction("Index", "Persons");
 		}
 
+
 		[HttpGet]
 		[Route("[action]/{personID}")]
 		public async Task<IActionResult> Edit(Guid personID)
@@ -110,6 +115,7 @@ namespace CRUDExample.Controllers
 
 			return View(country);
 		}
+
 
 		[HttpPost]
 		[Route("[action]/{personID}")]
@@ -146,7 +152,6 @@ namespace CRUDExample.Controllers
 			//var person = personService.GetPerson(personID)?.ToPersonUpdateRequest() ?? null;
 			//return RedirectToAction("Index", "Persons");
 		}
-
 
 
 		[HttpGet]
@@ -193,6 +198,8 @@ namespace CRUDExample.Controllers
 			//var person1 = personService.GetPerson(personID)?.ToPersonUpdateRequest() ?? null;
 			//return RedirectToAction("Index", "Persons");
 		}
+
+
 		[Route("PersonsPdf")]
 		public async Task<IActionResult> PersonsPdf()
 		{
@@ -209,6 +216,22 @@ namespace CRUDExample.Controllers
 
 			};
 
+		}
+
+
+		[Route("PersonsCSV")]
+		public async Task<IActionResult> PersonsCSV()
+		{
+			var memoryStream = await personService.GetPersonCSV();
+			return File(memoryStream, "application/octet-stream", "persons.csv");
+		}
+
+
+		[Route("[action]")]
+		public async Task<IActionResult> PersonsExcel()
+		{
+			var memoryStream = await personService.GetPersonExcel();
+			return File(memoryStream, "\tapplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "persons.xlsx");
 		}
 
 	}

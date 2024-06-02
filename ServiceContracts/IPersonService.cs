@@ -30,5 +30,6 @@ namespace ServiceContracts
 		/// </summary>
 		/// <returns>Retuen the stream with CSV</returns>
 		Task<MemoryStream> GetPersonCSV();
+		Task<MemoryStream> GetPersonExcel();
 	}
 }

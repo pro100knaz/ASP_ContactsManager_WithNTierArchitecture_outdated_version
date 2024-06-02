@@ -13,6 +13,12 @@
 
 	<a asp-action="PersonsPdf" asp-controller="Persons">Download all as Pdf Data</a>
 
+
+	<a asp-action="PersonsCSV" asp-controller="Persons">Download all as Persons format</a> 
+
+
+	<a asp-action="PersonsExcel" asp-controller="Persons">Download all In Excel Data format</a>
+
 	<div class="box flex">
 		<div class="flex-1">
 			<select class="form-input" name="searchBy">
@@ -27,10 +33,9 @@
 					{
 						<option value="@field.Key">@field.Value</option>
 					}
-
 				}
 			</select>
-		</div>
+		</div> 
 		<div class="flex-1">
 			<input type="search" id="Search" value="@ViewBag.CurrentSearchString" class="form-input"
 				   name="searchString"

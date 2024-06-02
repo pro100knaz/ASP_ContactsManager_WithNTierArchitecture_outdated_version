@@ -7,11 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CRUDExample", "CRUDExample\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CRUDTests", "CRUDTests\CRUDTests.csproj", "{7FCF8AC1-577D-4946-9818-5B5C20358A8B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enities", "Enities\Enities.csproj", "{F67A4028-6993-41A3-8A1E-FE7A4B954434}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enities", "Enities\Enities.csproj", "{F67A4028-6993-41A3-8A1E-FE7A4B954434}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceContracts", "ServiceContracts\ServiceContracts.csproj", "{A6F7628B-1F92-4790-8837-3CDBD81B829B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceContracts", "ServiceContracts\ServiceContracts.csproj", "{A6F7628B-1F92-4790-8837-3CDBD81B829B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{874ADA62-A600-4233-A5F3-893BC974F5CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Services.csproj", "{874ADA62-A600-4233-A5F3-893BC974F5CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
