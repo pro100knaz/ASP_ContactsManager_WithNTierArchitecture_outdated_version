@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 using EntityFrameworkCoreMock;
+using AutoFixture;
 
 namespace CRUDTests
 {
@@ -21,31 +22,40 @@ namespace CRUDTests
 		private readonly IPersonService personService;
 		private readonly ICountriesService countryService;
 		private readonly ITestOutputHelper testOutputHelper;
+		private readonly IFixture fixture;
 
+		//constructor
 		public PersonServiceTest(ITestOutputHelper testOutputHelper)
 		{
+			fixture = new Fixture();
 
-			//generate entities
-			var countriesList = new List<Country>() { }; //can add initial data
-			var personsList = new List<Person>() { }; //can add initial data
-														 //Create DbContext mock:
-			var mockDb = new DbContextMock<ApplicationDbContext>(new DbContextOptionsBuilder().Options);
+			var countriesInitialData = new List<Country>() { };
+			var personsInitialData = new List<Person>() { };
 
-			//Setup DbSet or DbQuery property:
-			var dbContext = mockDb.Object;
-			mockDb.CreateDbSetMock(temp => temp.Countries, countriesList);
-			mockDb.CreateDbSetMock(temp => temp.Persons, personsList);
+			//Craete mock for DbContext
+			DbContextMock<ApplicationDbContext> dbContextMock = new DbContextMock<ApplicationDbContext>(
+			  new DbContextOptionsBuilder<ApplicationDbContext>().Options
+			 );
 
-			
+			//Access Mock DbContext object
+			ApplicationDbContext dbContext = dbContextMock.Object;
 
+			//Create mocks for DbSets'
+			dbContextMock.CreateDbSetMock(temp => temp.Countries, countriesInitialData);
+			dbContextMock.CreateDbSetMock(temp => temp.Persons, personsInitialData);
+
+			//Create services based on mocked DbContext object
 			countryService = new CountryService(dbContext);
 
 			personService = new PersonService(dbContext, countryService);
 
 			this.testOutputHelper = testOutputHelper;
 		}
+
+
+
 		#region  AddPerson
-		 
+
 		[Fact]
 		public async Task AddPerson_Null()
 		{
@@ -58,11 +68,9 @@ namespace CRUDTests
 		public async Task AddPerson_NameIsNull()
 		{
 			//Arrange
-			PersonAddRequest? personAddRequest = new()
-			{
-				PersonName = null,
-
-			};
+			PersonAddRequest personAddRequest = fixture.Build<PersonAddRequest>()
+				.With(temp => temp.PersonName, null as string)
+				.Create();
 			//ASSERT AND ACT
 			 await Assert.ThrowsAsync<ArgumentException>(async () => await personService.AddPerson(personAddRequest));
 		}
@@ -70,16 +78,7 @@ namespace CRUDTests
 		public async Task AddPerson_ProperPersonDetails()
 		{
 			//Arrange
-			PersonAddRequest? personAddRequest = new()
-			{
-				PersonName = "null",
-				Email = "jffgx@mail.com",
-				Address = "null",
-				DateOfBirth = DateTime.Now,
-				CountryId = Guid.NewGuid(),
-				Gender = GenderOptions.Male,
-				ReceiveNewsLatters = true
-			};
+			PersonAddRequest? personAddRequest = fixture.Build<PersonAddRequest>().With(a => a.Email, "wadw@mail.ru").Create();
 
 			testOutputHelper.WriteLine(personAddRequest.ToString());
 
@@ -90,7 +89,7 @@ namespace CRUDTests
 
 			PersonResponse? responseFromGet = await personService.GetPerson(responseFromAdd.Id);
 
-			testOutputHelper.WriteLine(responseFromGet.ToString());
+			testOutputHelper.WriteLine(responseFromGet?.ToString());
 			//ASSERT
 			Assert.True(responseFromGet?.Id != Guid.Empty);
 
@@ -98,7 +97,8 @@ namespace CRUDTests
 
 			Assert.Equal(responseFromGet, responseFromAdd);
 
-			Assert.Contains(responseFromAdd, (await personService.GetAllPersons()).ToList());
+			var x = (await personService.GetAllPersons()).ToList();
+			Assert.Contains(responseFromAdd, x);
 		}
 
 		#endregion 
@@ -149,7 +149,10 @@ namespace CRUDTests
 		[Fact]
 		public async Task GetAllPersons_EmptyList()
 		{
-			List<PersonResponse> listResp = await personService.GetAllPersons();
+			var listResp = await personService.GetAllPersons();
+
+			int x = 5;
+
 			Assert.Empty(listResp);
 		}
 

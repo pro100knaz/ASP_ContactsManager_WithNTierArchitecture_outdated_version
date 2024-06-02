@@ -80,7 +80,7 @@ namespace Services
 			var persons = await DbContext.Persons.Include("Country").ToListAsync();
 				var personResponses =  persons.Select(c => ((c).ToPersonResponse())).ToList();
 			
-			var x = DbContext.sp_GetAllPersons().ToList();
+			//var x = DbContext.sp_GetAllPersons().ToList();
 			//{
 			//	var res = new PersonResponse();
 			//	res = c.ToPersonResponse();
