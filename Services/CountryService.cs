@@ -25,7 +25,7 @@ namespace Services
 			//		var z = AddCountry(new()
 			//		{ CountryName = $"Country Number = {i}" });
 			//	}
-		
+
 			//}
 
 			this.dbContext = dbContext;
@@ -70,7 +70,7 @@ namespace Services
 
 		public async Task<CountryResponse?> GetCountryById(Guid? countryId)
 		{
-			if(countryId == null)
+			if (countryId == null)
 				return null;
 
 
@@ -84,11 +84,30 @@ namespace Services
 			MemoryStream memoryStream = new MemoryStream();
 			await formFile.CopyToAsync(memoryStream);
 
+			int countriesInserted = 0;
+
 			using (ExcelPackage excelPackage = new ExcelPackage(memoryStream))
 			{
 				ExcelWorksheet excelWorksheet = excelPackage.Workbook.Worksheets["Countries"];
 				int rowCount = excelWorksheet.Dimension.Rows;
+				for (int row = 2; row < rowCount; row++)
+				{
+					string? cellValue = Convert.ToString(excelWorksheet.Cells[row, 1].Value);
+
+					if (!string.IsNullOrEmpty(cellValue))
+					{
+						string countryName = cellValue;
+
+						if (await dbContext.Countries.Where(temp => temp.Name == countryName).CountAsync() == 0)
+						{
+							await AddCountry(new CountryAddRequest() { CountryName = countryName });
+							countriesInserted++;
+   						}
+					}
+				}
 			}
+
+			return countriesInserted;
 		}
 	}
 }
