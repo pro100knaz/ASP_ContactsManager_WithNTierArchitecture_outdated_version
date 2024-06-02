@@ -1,4 +1,5 @@
 ﻿using Enities;
+using Microsoft.EntityFrameworkCore;
 using RepositoryContracts.interfaces;
 using System;
 using System.Collections.Generic;
@@ -11,29 +12,42 @@ namespace RepositoriesImplementation
 {
 	public class PersonsRepository : IPersonsRepository
 	{
-		public Task<Person> AddPerson(Person person)
+		private readonly ApplicationDbContext applicationDbContext;
+
+		public PersonsRepository(ApplicationDbContext applicationDbContext)
+        {
+			this.applicationDbContext = applicationDbContext;
+		}
+        public async Task<Person> AddPerson(Person person)
 		{
-			throw new NotImplementedException();
+			await applicationDbContext.Persons.AddAsync(person);
+			await applicationDbContext.SaveChangesAsync();
+			return person;
 		}
 
-		public Task<bool> DeletePersonByPersonId(Guid id)
+		public async Task<bool> DeletePersonByPersonId(Guid id)
 		{
-			throw new NotImplementedException();
+			applicationDbContext.Persons.RemoveRange(applicationDbContext.Persons.Where(temp => temp.Id == id));
+
+			int rowsDeleted = await applicationDbContext.SaveChangesAsync();
+
+			return rowsDeleted > 0;
 		}
 
-		public Task<IEnumerable<Person>> GetAllPersons()
+		public async Task<IEnumerable<Person>> GetAllPersons()
 		{
-			throw new NotImplementedException();
+			return await applicationDbContext.Persons.AsNoTracking().Include("Country").ToListAsync();
+
 		}
 
-		public Task<IEnumerable<Person>> GetFilteredPerson(Expression<Func<Person, bool>> predicate)
+		public async Task<IEnumerable<Person>> GetFilteredPerson(Expression<Func<Person, bool>> predicate)
 		{
-			throw new NotImplementedException();
+			return await applicationDbContext.Persons.AsNoTracking().Include("Country").Where(predicate).ToListAsync();
 		}
 
-		public Task<Person?> GetPersonById(Guid id)
+		public async Task<Person?> GetPersonById(Guid id)
 		{
-			throw new NotImplementedException();
+			return await applicationDbContext.Persons.AsNoTracking().FirstOrDefaultAsync(person => person.Id == id);
 		}
 
 		public Task<Person> GetPersonByName(string name)
@@ -41,9 +55,26 @@ namespace RepositoriesImplementation
 			throw new NotImplementedException();
 		}
 
-		public Task<Person> UpdatePersonByPersonId(Person person)
+		public async Task<Person> UpdatePersonByPersonId(Person person)
 		{
-			throw new NotImplementedException();
+			Person? matchingPerson  = await applicationDbContext.Persons.FirstOrDefaultAsync(temp => temp.Id == person.Id);
+
+			if (matchingPerson == null)
+				return person;
+
+
+			matchingPerson.Id = person.Id;
+			matchingPerson.Address = person.Address;
+			matchingPerson.Gender = person.Gender;
+			matchingPerson.DateOfBirth = person.DateOfBirth;
+			matchingPerson.CountryId = person.CountryId;
+			matchingPerson.Email = person.Email;
+			matchingPerson.ReceiveNewsLatters = person.ReceiveNewsLatters;
+
+
+			int count = await applicationDbContext.SaveChangesAsync();
+
+			return matchingPerson;
 		}
 	}
 }
