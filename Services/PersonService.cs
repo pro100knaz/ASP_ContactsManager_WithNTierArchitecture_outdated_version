@@ -108,7 +108,7 @@ namespace Services
 			return persons.Select(temp => temp.ToPersonResponse()).ToList();
 		}
 
-		public List<PersonResponse> GetSortedPersons
+		public async  Task<List<PersonResponse>> GetSortedPersons
 			(List<PersonResponse> allPersons, string sortBy, SortOrderOptions sortOrderOptions)
 		{
 			if (string.IsNullOrEmpty(sortBy))

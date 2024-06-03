@@ -46,7 +46,7 @@ namespace CRUDExample.Controllers
 			ViewBag.CurrentSearchString = searchString;
 
 			//Sort
-			List<PersonResponse> sortedPersons = personService.GetSortedPersons(persons, sortBy, sortOrder);
+			List<PersonResponse> sortedPersons = await personService.GetSortedPersons(persons, sortBy, sortOrder);
 			ViewBag.CurrentSortBy = sortBy;
 			ViewBag.CurrentSortOrder = sortOrder.ToString();
 
@@ -89,7 +89,7 @@ namespace CRUDExample.Controllers
 
 				ViewBag.Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
 
-				return View();
+				return View(personAddRequest);
 			}
 			PersonResponse response = await personService.AddPerson(personAddRequest);
 			return RedirectToAction("Index", "Persons");

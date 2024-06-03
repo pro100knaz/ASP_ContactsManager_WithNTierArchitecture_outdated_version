@@ -15,7 +15,7 @@ namespace ServiceContracts
 		Task<List<PersonResponse>> GetAllPersons();
 		Task<List<PersonResponse>> GetFilteredPerson(string searchBy, string? searchString);
 
-		public  List<PersonResponse> GetSortedPersons(List<PersonResponse> allPersons, string sortBy,
+		public  Task<List<PersonResponse>> GetSortedPersons(List<PersonResponse> allPersons, string sortBy,
 			SortOrderOptions sortOrderOptions);
 		/// <summary>
 		/// Updates the person data

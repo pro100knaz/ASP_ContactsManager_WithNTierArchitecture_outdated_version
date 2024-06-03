@@ -308,10 +308,12 @@ namespace CRUDTests
 
 			var allPersons = await personService.GetAllPersons();
 			//ACT
-			List<PersonResponse> listRespFromSort = personService
+			List<PersonResponse> listRespFromSort = await personService
 				.GetSortedPersons(allPersons,nameof(Person.PersonName), SortOrderOptions.Descending);
 
 			listRespFromSort.Should().BeInDescendingOrder(teemp => teemp.PersonName);
+
+
 		}
 		#endregion
 
