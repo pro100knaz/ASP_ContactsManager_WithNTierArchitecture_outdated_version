@@ -1,5 +1,7 @@
 using Enities;
 using Microsoft.EntityFrameworkCore;
+using RepositoriesImplementation;
+using RepositoryContracts.interfaces;
 using ServiceContracts;
 using Services;
 
@@ -7,8 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 
-builder.Services.AddScoped<ICountriesService, CountryService>();
-builder.Services.AddScoped<IPersonService, PersonService>();
+builder.Services.AddScoped<ICountriesRepository, CountriesRepository>();
+builder.Services.AddScoped<IPersonsRepository, PersonsRepository>();
 
 builder.Services.AddScoped<ICountriesService, CountryService>();
 builder.Services.AddScoped<IPersonService, PersonService>();
