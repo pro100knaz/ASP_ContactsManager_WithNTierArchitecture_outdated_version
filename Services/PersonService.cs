@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using OfficeOpenXml;
 using RepositoryContracts.interfaces;
+using RepositoriesImplementation;
 
 namespace Services
 {
@@ -67,41 +68,40 @@ namespace Services
 
 		public async Task<List<PersonResponse>> GetFilteredPerson(string searchBy, string? searchString)
 		{
+			//if(searchBy == nameof(PersonResponse.DateOfBirth))
+			//{
+			//	if (DateTime.TryParseExact(searchString, "dd MMMM yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime searchDate))
+			//	{
+			//		return (await personsRepository.GetFilteredPerson(temp =>
+			//			temp.DateOfBirth.HasValue &&
+			//			temp.DateOfBirth.Value.Date == searchDate.Date)).Select(temp => temp.ToPersonResponse()).ToList();
+			//	}
+			//}
 
 			List<Person> persons = searchBy switch
 			{
 				nameof(PersonResponse.PersonName) =>
 				(await personsRepository.GetFilteredPerson(temp =>
-					temp.PersonName.Contains(searchString,
-					StringComparison.OrdinalIgnoreCase))),
+					temp.PersonName.Contains(searchString))),
 
 				nameof(PersonResponse.Email) =>
 				(await personsRepository.GetFilteredPerson(temp =>
-					temp.Email.Contains(searchString,
-					StringComparison.OrdinalIgnoreCase))),
+					temp.Email.Contains(searchString))),
 
-				nameof(PersonResponse.DateOfBirth) =>
-			(await personsRepository.GetFilteredPerson
-			(temp => temp.DateOfBirth.Value.ToString("dd MMMM yyyy")
-			.Contains(searchString, StringComparison.OrdinalIgnoreCase))),
-
-
+ 
 
 				nameof(PersonResponse.Gender) =>
 					(await personsRepository.GetFilteredPerson(temp =>
-						temp.Gender.Contains(searchString,
-						StringComparison.OrdinalIgnoreCase))),
+						temp.Gender.Contains(searchString))),
 
 
 				nameof(PersonResponse.Country) =>
 					(await personsRepository.GetFilteredPerson(temp =>
-						temp.Country.Name.Contains(searchString,
-						StringComparison.OrdinalIgnoreCase))),
+						temp.Country.Name.Contains(searchString))),
 
 				nameof(PersonResponse.Address) =>
 			(await personsRepository.GetFilteredPerson(temp =>
-				temp.Address.Contains(searchString,
-				StringComparison.OrdinalIgnoreCase))),
+				temp.Address.Contains(searchString))),
 
 				_ => await personsRepository.GetAllPersons()
 			};

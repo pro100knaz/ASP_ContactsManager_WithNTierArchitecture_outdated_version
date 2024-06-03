@@ -15,6 +15,9 @@ using Xunit.Sdk;
 using EntityFrameworkCoreMock;
 using AutoFixture;
 using FluentAssertions;
+using RepositoryContracts.interfaces;
+using Moq;
+using RepositoriesImplementation;
 
 namespace CRUDTests
 {
@@ -24,11 +27,17 @@ namespace CRUDTests
 		private readonly ICountriesService countryService;
 		private readonly ITestOutputHelper testOutputHelper;
 		private readonly IFixture fixture;
+		//repositories
+		private readonly IPersonsRepository personsRepository;
+		private readonly Mock<IPersonsRepository> mockPersonsRepository;
 
 		//constructor
 		public PersonServiceTest(ITestOutputHelper testOutputHelper)
 		{
 			fixture = new Fixture();
+			mockPersonsRepository = new Mock<IPersonsRepository>();
+			personsRepository = /* new PersonsRepository();*/ mockPersonsRepository.Object;
+
 
 			var countriesInitialData = new List<Country>() { };
 			var personsInitialData = new List<Person>() { };
@@ -47,8 +56,7 @@ namespace CRUDTests
 
 			//Create services based on mocked DbContext object
 			countryService = new CountryService(null);
-
-			personService = new PersonService(null);
+			personService = new PersonService(personsRepository);
 
 			this.testOutputHelper = testOutputHelper;
 		}
@@ -90,41 +98,30 @@ namespace CRUDTests
 			await Assert.ThrowsAsync<ArgumentException>(async () => await personService.AddPerson(personAddRequest));
 		}
 		[Fact]
-		public async Task AddPerson_ProperPersonDetails()
+		public async Task AddPerson_FullPersonDetails_ToBeSuccessful()
 		{
 			//Arrange
 			PersonAddRequest? personAddRequest = fixture.Build<PersonAddRequest>().With(a => a.Email, "wadw@mail.ru").Create();
 
 			testOutputHelper.WriteLine(personAddRequest.ToString());
 
+			Person person = personAddRequest.ToPerson();
+			PersonResponse personResponse_expected = person.ToPersonResponse();
+
+			//iF WE SUPPLY ANY ARGUMENT VALUE TO THE ADDpERSON METHOD , IT SHOULD RETURN THE SAME RETURN VALUE
+			mockPersonsRepository.Setup(temp => temp.AddPerson(It.IsAny<Person>())).ReturnsAsync(person);
+
 			// ACT
 			PersonResponse responseFromAdd = await personService.AddPerson(personAddRequest);
 
 			testOutputHelper.WriteLine(responseFromAdd.ToString());
-
-			PersonResponse? responseFromGet = await personService.GetPerson(responseFromAdd.Id);
-
-			testOutputHelper.WriteLine(responseFromGet?.ToString());
+			personResponse_expected.Id = responseFromAdd.Id;
 			//ASSERT
-			Assert.True(responseFromGet?.Id != Guid.Empty);
-
-			responseFromGet?.Id.Should().NotBe(Guid.Empty);
-
 
 			Assert.True(responseFromAdd.Id != Guid.Empty);
-
 			responseFromAdd.Id.Should().NotBe(Guid.Empty);
 
-			Assert.Equal(responseFromGet, responseFromAdd);
-
-			responseFromAdd.Should().Be(responseFromGet);
-
-			var x = await personService.GetAllPersons();
-
-
-
-
-			Assert.Contains(responseFromAdd, x);
+			responseFromAdd.Should().Be(personResponse_expected);
 		}
 
 		#endregion 
