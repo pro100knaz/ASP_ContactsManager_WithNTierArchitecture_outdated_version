@@ -15,7 +15,7 @@ builder.Services.AddScoped<IPersonsRepository, PersonsRepository>();
 builder.Services.AddScoped<ICountriesService, CountryService>();
 builder.Services.AddScoped<IPersonService, PersonService>();
 
- 
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
 	options.UseSqlServer(builder.Configuration.GetConnectionString("PersonDb")); //явное укаазание тспользоание типа бд
@@ -24,16 +24,24 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 var app = builder.Build();
 
 
-if(builder.Environment.IsDevelopment())
+if (builder.Environment.IsDevelopment())
 {
 	app.UseDeveloperExceptionPage();
 }
 
-Rotativa.AspNetCore.RotativaConfiguration.Setup("wwwroot", wkhtmltopdfRelativePath:"Rotativa");
- 
+if (!builder.Environment.IsEnvironment("Test"))
+{
+	Rotativa.AspNetCore.RotativaConfiguration.Setup("wwwroot", wkhtmltopdfRelativePath: "Rotativa");
+
+}
+
 app.UseStaticFiles();
 app.UseRouting();
 app.MapControllers();
 
 
-app.Run(); 
+app.Run();
+
+
+public partial class Program { } // make the auto-generated Program accessible programmatically
+								 //to make it available in our code
