@@ -16,6 +16,8 @@ using OfficeOpenXml;
 using RepositoryContracts.interfaces;
 using RepositoriesImplementation;
 using Microsoft.Extensions.Logging;
+using Serilog;
+using SerilogTimings;
 
 namespace Services
 {
@@ -23,9 +25,10 @@ namespace Services
 	{
 		private readonly ILogger<PersonService> logger;
 		private readonly IPersonsRepository personsRepository;
-
-		public PersonService(ILogger<PersonService> logger, IPersonsRepository personsRepository)
+		private readonly IDiagnosticContext diagnosticContext;
+		public PersonService(IDiagnosticContext diagnosticContext , ILogger<PersonService> logger, IPersonsRepository personsRepository)
 		{
+			this.diagnosticContext = diagnosticContext;
 			this.logger = logger;
 			this.personsRepository = personsRepository;
 		}
@@ -75,51 +78,46 @@ namespace Services
 
 		public async Task<List<PersonResponse>> GetFilteredPerson(string searchBy, string? searchString)
 		{
-			//if(searchBy == nameof(PersonResponse.DateOfBirth))
-			//{
-			//	if (DateTime.TryParseExact(searchString, "dd MMMM yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime searchDate))
-			//	{
-			//		return (await personsRepository.GetFilteredPerson(temp =>
-			//			temp.DateOfBirth.HasValue &&
-			//			temp.DateOfBirth.Value.Date == searchDate.Date)).Select(temp => temp.ToPersonResponse()).ToList();
-			//	}
-			//}
-
-			//log
-
 			logger.LogInformation("Inside \"Get Filtered Persons \" of Person Service");
 
 			logger.LogDebug("SerchBy {0}; SearchString: {1}", searchBy , searchString);
-
-
-			List<Person> persons = searchBy switch
+			List<Person> persons = null;
+			using (Operation.Time("Time for Filtered Persons "))
 			{
-				nameof(PersonResponse.PersonName) =>
-				(await personsRepository.GetFilteredPerson(temp =>
-					temp.PersonName.Contains(searchString))),
-
-				nameof(PersonResponse.Email) =>
-				(await personsRepository.GetFilteredPerson(temp =>
-					temp.Email.Contains(searchString))),
-
- 
-
-				nameof(PersonResponse.Gender) =>
+				persons = searchBy switch
+				{
+					nameof(PersonResponse.PersonName) =>
 					(await personsRepository.GetFilteredPerson(temp =>
-						temp.Gender.Contains(searchString))),
+						temp.PersonName.Contains(searchString))),
 
-
-				nameof(PersonResponse.Country) =>
+					nameof(PersonResponse.Email) =>
 					(await personsRepository.GetFilteredPerson(temp =>
-						temp.Country.Name.Contains(searchString))),
+						temp.Email.Contains(searchString))),
 
-				nameof(PersonResponse.Address) =>
-			(await personsRepository.GetFilteredPerson(temp =>
-				temp.Address.Contains(searchString))),
 
-				_ => await personsRepository.GetAllPersons()
-			};
+
+					nameof(PersonResponse.Gender) =>
+						(await personsRepository.GetFilteredPerson(temp =>
+							temp.Gender.Contains(searchString))),
+
+
+					nameof(PersonResponse.Country) =>
+						(await personsRepository.GetFilteredPerson(temp =>
+							temp.Country.Name.Contains(searchString))),
+
+					nameof(PersonResponse.Address) =>
+				(await personsRepository.GetFilteredPerson(temp =>
+					temp.Address.Contains(searchString))),
+
+					_ => await personsRepository.GetAllPersons()
+				};
+				
+			}
+			diagnosticContext.Set("List of Filtered", persons);
+
 			return persons.Select(temp => temp.ToPersonResponse()).ToList();
+
+
 		}
 
 		public async  Task<List<PersonResponse>> GetSortedPersons

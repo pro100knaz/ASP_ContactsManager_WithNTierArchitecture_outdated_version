@@ -10,6 +10,11 @@ namespace Enities
 {
 	public class Person
 	{
+		public override string ToString()
+		{
+			return $"Person name: {PersonName}, Email {Email}, Address {Address}, Gender {Gender} , Country Name  {Country?.Name ?? "empty field"}  \n ";
+		}
+
 		[Key]
 		public Guid Id { get; set; }
 		[StringLength(40)]

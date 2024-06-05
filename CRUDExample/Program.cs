@@ -26,13 +26,13 @@ builder.Host.UseSerilog((HostBuilderContext context, IServiceProvider services, 
 	.ReadFrom.Services(services); // read out current app's services and make thrm available to serilog
 });
 
-//builder.Services.AddHttpLogging(configureOptions =>
-//{
-//	//need to work app.UseHttpLogging(); even if configureOptions lambda is null it is still working and idk why but let it be
-//	configureOptions.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestProperties 
-//	| Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.ResponsePropertiesAndHeaders; //in the same way we can add more or less information inside logging fields
+builder.Services.AddHttpLogging(configureOptions =>
+{
+	//need to work app.UseHttpLogging(); even if configureOptions lambda is null it is still working and idk why but let it be
+	configureOptions.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestProperties
+	| Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.ResponsePropertiesAndHeaders; //in the same way we can add more or less information inside logging fields
 
-//});
+});
 
 builder.Services.AddControllersWithViews();
 
@@ -52,7 +52,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 
 var app = builder.Build();
-
+app.UseSerilogRequestLogging();
 
 
 if (builder.Environment.IsDevelopment())
@@ -61,7 +61,7 @@ if (builder.Environment.IsDevelopment())
 }
 
 
-//app.UseHttpLogging();
+app.UseHttpLogging();
 app.UseSerilogRequestLogging();
 
 if (!builder.Environment.IsEnvironment("Test"))

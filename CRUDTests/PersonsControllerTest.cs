@@ -32,6 +32,8 @@ namespace CRUDTests
 			mockPersonService = new Mock<IPersonService>();
 			mockCountryService = new Mock<ICountriesService>();
 
+
+
 			personService = mockPersonService.Object;
 			countryService = mockCountryService.Object;
         }
@@ -42,6 +44,8 @@ namespace CRUDTests
 		{
 			//Arrange 
 			List<PersonResponse> personResponses = fixture.Create<List<PersonResponse>>();
+
+
 
 			PersonsController personsController = new PersonsController(personService, countryService);
 

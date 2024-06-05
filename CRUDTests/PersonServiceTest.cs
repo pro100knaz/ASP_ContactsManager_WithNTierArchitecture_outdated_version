@@ -20,6 +20,9 @@ using Moq;
 using RepositoriesImplementation;
 using FluentAssertions.Execution;
 using System.Linq.Expressions;
+using Serilog.Extensions.Hosting;
+using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace CRUDTests
 {
@@ -38,9 +41,9 @@ namespace CRUDTests
 			fixture = new Fixture();
 			mockPersonsRepository = new Mock<IPersonsRepository>();
 			personsRepository = mockPersonsRepository.Object;
-
-
-			personService = new PersonService(personsRepository);
+			var diagnosticContextMock = new Mock<IDiagnosticContext>();
+			var loggerMock = new Mock<ILogger<PersonService>>();
+			personService = new PersonService(diagnosticContextMock.Object, loggerMock.Object, personsRepository);
 
 			this.testOutputHelper = testOutputHelper;
 		}
