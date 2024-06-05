@@ -1,5 +1,6 @@
 ﻿using Enities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using RepositoryContracts.interfaces;
 using System;
 using System.Collections.Generic;
@@ -12,10 +13,12 @@ namespace RepositoriesImplementation
 {
 	public class PersonsRepository : IPersonsRepository
 	{
+		private readonly ILogger<PersonsRepository> logger;
 		private readonly ApplicationDbContext applicationDbContext;
 
-		public PersonsRepository(ApplicationDbContext applicationDbContext)
+		public PersonsRepository(ILogger<PersonsRepository> logger, ApplicationDbContext applicationDbContext)
         {
+			this.logger = logger;
 			this.applicationDbContext = applicationDbContext;
 		}
         public async Task<Person> AddPerson(Person person)
@@ -36,12 +39,14 @@ namespace RepositoriesImplementation
 
 		public async Task<List<Person>> GetAllPersons()
 		{
+			logger.LogInformation("Inside \"Get All Persons \" of Person Repository");
 			return await applicationDbContext.Persons.AsNoTracking().Include("Country").ToListAsync();
 
 		}
 
 		public async Task<List<Person>> GetFilteredPerson(Expression<Func<Person, bool>> predicate)
 		{
+			logger.LogInformation("Inside \"Get Filtered Person \" of Person Repository");
 			return await applicationDbContext.Persons.AsNoTracking().Include("Country").Where(predicate).ToListAsync();
 		}
 

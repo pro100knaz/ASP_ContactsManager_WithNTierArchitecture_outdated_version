@@ -13,11 +13,14 @@ namespace CRUDExample.Controllers
 	[Route("persons")]
 	public class PersonsController : Controller
 	{
+		private readonly ILogger<PersonsController> logger;
 		private readonly IPersonService personService;
 		private readonly ICountriesService countriesService;
 
-		public PersonsController(IPersonService personService, ICountriesService countriesService)
+		public PersonsController(ILogger<PersonsController> logger, 
+			IPersonService personService, ICountriesService countriesService)
 		{
+			this.logger = logger;
 			this.personService = personService;
 			this.countriesService = countriesService;
 		}
@@ -29,6 +32,12 @@ namespace CRUDExample.Controllers
 			string sortBy = nameof(PersonResponse.PersonName),
 			SortOrderOptions sortOrder = SortOrderOptions.Ascending)
 		{
+			//log
+			logger.LogInformation("Index Actoin method of PersonsController");
+
+			logger.LogDebug($"Search by : {searchBy}, " +
+				$"searchString: {searchString}, sortBy: {sortBy} , sortOrder: {sortOrder.ToString()}");
+
 			//Search
 			List<PersonResponse> persons = await personService.GetFilteredPerson(searchBy, searchString);
 			ViewBag.SearchFields = new Dictionary<string, string>()

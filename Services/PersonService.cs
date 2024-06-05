@@ -15,15 +15,18 @@ using System.Threading.Tasks;
 using OfficeOpenXml;
 using RepositoryContracts.interfaces;
 using RepositoriesImplementation;
+using Microsoft.Extensions.Logging;
 
 namespace Services
 {
 	public class PersonService : IPersonService
 	{
+		private readonly ILogger<PersonService> logger;
 		private readonly IPersonsRepository personsRepository;
 
-		public PersonService(IPersonsRepository personsRepository)
+		public PersonService(ILogger<PersonService> logger, IPersonsRepository personsRepository)
 		{
+			this.logger = logger;
 			this.personsRepository = personsRepository;
 		}
 
@@ -46,6 +49,10 @@ namespace Services
 
 		public async Task<List<PersonResponse>> GetAllPersons()
 		{
+			//Log
+			logger.LogInformation("Inside \"Get All Persons \" of Person Service");
+
+
 			//List<PersonResponse> personResponses = new List<PersonResponse>();
 			var persons = await personsRepository.GetAllPersons();
 			var personResponses = persons.Select(c => ((c).ToPersonResponse())).ToList();
@@ -77,6 +84,13 @@ namespace Services
 			//			temp.DateOfBirth.Value.Date == searchDate.Date)).Select(temp => temp.ToPersonResponse()).ToList();
 			//	}
 			//}
+
+			//log
+
+			logger.LogInformation("Inside \"Get Filtered Persons \" of Person Service");
+
+			logger.LogDebug("SerchBy {0}; SearchString: {1}", searchBy , searchString);
+
 
 			List<Person> persons = searchBy switch
 			{
