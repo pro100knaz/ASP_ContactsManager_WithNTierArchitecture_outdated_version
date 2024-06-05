@@ -4,6 +4,7 @@ using RepositoriesImplementation;
 using RepositoryContracts.interfaces;
 using ServiceContracts;
 using Services;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,20 +12,27 @@ var builder = WebApplication.CreateBuilder(args);
 
 //Logging Configuration
 //builder.Logging.ClearProviders();
-//builder.Logging.AddConsole();
+//builder.Logging.AddConsole();a
 //builder.Logging.AddDebug();
 //builder.Logging.AddEventLog();
 
 
-//S
-
-builder.Services.AddHttpLogging(configureOptions =>
+//Serilog
+//using var log = new LoggerConfiguration().CreateLogger();
+Log.Logger = new LoggerConfiguration().CreateLogger();
+builder.Host.UseSerilog((HostBuilderContext context, IServiceProvider services, LoggerConfiguration logger) =>
 {
-	//need to work app.UseHttpLogging(); even if configureOptions lambda is null it is still working and idk why but let it be
-	configureOptions.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestProperties 
-	| Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.ResponsePropertiesAndHeaders; //in the same way we can add more or less information inside logging fields
-
+	logger.ReadFrom.Configuration(context.Configuration) //read configuration settigs from buil-in IConfiguration
+	.ReadFrom.Services(services); // read out current app's services and make thrm available to serilog
 });
+
+//builder.Services.AddHttpLogging(configureOptions =>
+//{
+//	//need to work app.UseHttpLogging(); even if configureOptions lambda is null it is still working and idk why but let it be
+//	configureOptions.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestProperties 
+//	| Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.ResponsePropertiesAndHeaders; //in the same way we can add more or less information inside logging fields
+
+//});
 
 builder.Services.AddControllersWithViews();
 
@@ -52,7 +60,9 @@ if (builder.Environment.IsDevelopment())
 	app.UseDeveloperExceptionPage();
 }
 
-app.UseHttpLogging();
+
+//app.UseHttpLogging();
+app.UseSerilogRequestLogging();
 
 if (!builder.Environment.IsEnvironment("Test"))
 {
