@@ -18,13 +18,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 //Serilog
-//using var log = new LoggerConfiguration().CreateLogger();
-Log.Logger = new LoggerConfiguration().CreateLogger();
-builder.Host.UseSerilog((HostBuilderContext context, IServiceProvider services, LoggerConfiguration logger) =>
-{
-	logger.ReadFrom.Configuration(context.Configuration) //read configuration settigs from buil-in IConfiguration
-	.ReadFrom.Services(services); // read out current app's services and make thrm available to serilog
+
+builder.Host.UseSerilog((HostBuilderContext context, IServiceProvider services, LoggerConfiguration loggerConfiguration) => {
+
+	loggerConfiguration
+	.ReadFrom.Configuration(context.Configuration) //read configuration settings from built-in IConfiguration
+	.ReadFrom.Services(services); //read out current app's services and make them available to serilog
 });
+
+builder.Services.AddControllersWithViews();
 
 builder.Services.AddHttpLogging(configureOptions =>
 {
@@ -34,7 +36,6 @@ builder.Services.AddHttpLogging(configureOptions =>
 
 });
 
-builder.Services.AddControllersWithViews();
 
 
 builder.Services.AddScoped<ICountriesRepository, CountriesRepository>();
@@ -51,7 +52,16 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 													 //and a LogLevel value that specifies the minimum log level at which messages should be sent.
 });
 
+
+
+
+
+
+
+
 var app = builder.Build();
+
+
 app.UseSerilogRequestLogging();
 
 
@@ -62,7 +72,7 @@ if (builder.Environment.IsDevelopment())
 
 
 app.UseHttpLogging();
-app.UseSerilogRequestLogging();
+
 
 if (!builder.Environment.IsEnvironment("Test"))
 {
@@ -75,10 +85,6 @@ app.UseRouting();
 app.MapControllers();
 
 
-app.Logger.LogCritical("Critical");
-app.Logger.LogError("Error");
-app.Logger.LogWarning("Warning");
-app.Logger.LogInformation("Information");
 
 app.Run();
 

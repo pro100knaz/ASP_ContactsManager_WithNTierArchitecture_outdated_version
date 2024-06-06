@@ -1,5 +1,7 @@
-﻿using Enities;
+﻿using CRUDExample.Filters.ActionFilters;
+using Enities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Rotativa.AspNetCore;
@@ -17,7 +19,7 @@ namespace CRUDExample.Controllers
 		private readonly IPersonService personService;
 		private readonly ICountriesService countriesService;
 
-		public PersonsController(ILogger<PersonsController> logger, 
+		public PersonsController(ILogger<PersonsController> logger,
 			IPersonService personService, ICountriesService countriesService)
 		{
 			this.logger = logger;
@@ -28,36 +30,17 @@ namespace CRUDExample.Controllers
 
 		[Route("[action]")]
 		[Route("/")]
+		[TypeFilter(typeof(PersonsListActionFilter))] // personal filter
 		public async Task<IActionResult> Index(string searchBy, string? searchString,
 			string sortBy = nameof(PersonResponse.PersonName),
 			SortOrderOptions sortOrder = SortOrderOptions.Ascending)
 		{
-			//log
-			logger.LogInformation("Index Actoin method of PersonsController");
-
-			logger.LogDebug($"Search by : {searchBy}, " +
-				$"searchString: {searchString}, sortBy: {sortBy} , sortOrder: {sortOrder.ToString()}");
-
 			//Search
-			List<PersonResponse> persons = await personService.GetFilteredPerson(searchBy, searchString);
-			ViewBag.SearchFields = new Dictionary<string, string>()
-			{
-				{ nameof(PersonResponse.PersonName), "Person Name"},
-				{ nameof(PersonResponse.Email), "Email"},
-				{ nameof(PersonResponse.DateOfBirth), "Date Of Birth"},
-				{ nameof(PersonResponse.Gender), "Gender"},
-				{ nameof(PersonResponse.CountryId), "CountryId"},
-				{ nameof(PersonResponse.Address), "Address"},
-			};
-
-
-			ViewBag.CurrentSearchBy = searchBy;
-			ViewBag.CurrentSearchString = searchString;
+			List<PersonResponse> persons = (!string.IsNullOrEmpty(searchString)) 
+				? await personService.GetFilteredPerson(searchBy, searchString) : await personService.GetAllPersons();
 
 			//Sort
 			List<PersonResponse> sortedPersons = await personService.GetSortedPersons(persons, sortBy, sortOrder);
-			ViewBag.CurrentSortBy = sortBy;
-			ViewBag.CurrentSortOrder = sortOrder.ToString();
 
 			return View(sortedPersons);
 		}
@@ -75,8 +58,6 @@ namespace CRUDExample.Controllers
 				Text = temp.CountryName,
 				Value = temp.CountryId.ToString()
 			});
-			//new SelectListItem() {Text = "Rpma",Value = "1"};
-			//<option value="1">Rpma</option>
 
 
 			return View();
@@ -132,7 +113,7 @@ namespace CRUDExample.Controllers
 		{
 
 
-			var person =  await personService.GetPerson(personUpdateRequest.PersonId);
+			var person = await personService.GetPerson(personUpdateRequest.PersonId);
 			if (person == null)
 			{
 				return RedirectToAction("Index", "Persons");
@@ -215,10 +196,12 @@ namespace CRUDExample.Controllers
 			var persons = await personService.GetAllPersons();
 
 			return new ViewAsPdf("PersonsPdf", persons, ViewData)
-			{ 
+			{
 				PageMargins = new Rotativa.AspNetCore.Options.Margins()
 				{
-					Top = 20, Right=20, Bottom = 20,
+					Top = 20,
+					Right = 20,
+					Bottom = 20,
 					Left = 20
 				},
 				PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
