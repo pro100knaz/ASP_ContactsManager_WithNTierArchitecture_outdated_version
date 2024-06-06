@@ -5,6 +5,7 @@ using RepositoryContracts.interfaces;
 using ServiceContracts;
 using Services;
 using Serilog;
+using CRUDExample.Filters.ActionFilters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +19,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 //Serilog
-
 builder.Host.UseSerilog((HostBuilderContext context, IServiceProvider services, LoggerConfiguration loggerConfiguration) => {
 
 	loggerConfiguration
@@ -26,7 +26,25 @@ builder.Host.UseSerilog((HostBuilderContext context, IServiceProvider services, 
 	.ReadFrom.Services(services); //read out current app's services and make them available to serilog
 });
 
-builder.Services.AddControllersWithViews();
+//adds controllers and views as services
+builder.Services.AddControllersWithViews(options =>
+{
+	//Adding Global Filters
+
+	//options.Filters.Add<ResponseHeaderActionFilter>(); // no parameters (onlu order)
+
+	var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<ResponseHeaderActionFilter>>(); //to build the required services
+																								 //GetService return null
+																								 //GetRequiredService throw exception, but if need for sure it is bettter ofc
+
+
+	options.Filters.Add(new ResponseHeaderActionFilter(logger, "My-Key-From-Global", "My-Value-From-Global", 0));  //With Parameters )
+
+
+	var logger1 = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<ResponseHeaderAsyncActionFilter>>();
+	options.Filters.Add(new ResponseHeaderAsyncActionFilter(logger1, "My-Key-From-Global-Async", "My-Value-From-Global-Async", 0));  //With Parameters )
+
+});
 
 builder.Services.AddHttpLogging(configureOptions =>
 {

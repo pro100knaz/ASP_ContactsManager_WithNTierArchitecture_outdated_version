@@ -13,6 +13,10 @@ using System.Text.Json;
 namespace CRUDExample.Controllers
 {
 	[Route("persons")]
+	[TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = new object[]
+		{
+			"X-Custom-Key-From-Class","Custom-Value-From-Class", 8   //first value will be supplied autu by ioc but another we can supply personaly
+		})] //Just Can And Do and add Filter FOR EVERY METHOD inside that controller
 	public class PersonsController : Controller
 	{
 		private readonly ILogger<PersonsController> logger;
@@ -31,6 +35,11 @@ namespace CRUDExample.Controllers
 		[Route("[action]")]
 		[Route("/")]
 		[TypeFilter(typeof(PersonsListActionFilter))] // personal filter
+		[TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = new object[]
+		{
+			"X-Custom-Key-From-Action","Custom-Value-From-Action", 3   //first value will be supplied autu by ioc but another we can supply personaly
+		} //, Order = 3  //Oorder like 0 , 1, 2 , 3 action 3, 2, 1, 0 )) easy and clear
+			)] 
 		public async Task<IActionResult> Index(string searchBy, string? searchString,
 			string sortBy = nameof(PersonResponse.PersonName),
 			SortOrderOptions sortOrder = SortOrderOptions.Ascending)
@@ -66,22 +75,27 @@ namespace CRUDExample.Controllers
 
 		[Route("[action]")]
 		[HttpPost]
-		public async Task<IActionResult> Create(PersonAddRequest personAddRequest)
+		[TypeFilter(typeof(PersonCreateAndEditPostCreateActionFilter))]
+		public async Task<IActionResult> Create(PersonAddRequest personRequest)
 		{
-			if (!ModelState.IsValid)
-			{
-				var countries = await countriesService.GetAllCountrise();
-				ViewBag.Countries = countries.Select(temp => new SelectListItem()
-				{
-					Text = temp.CountryName,
-					Value = temp.CountryId.ToString()
-				});
+			#region Хлам
+//if (!ModelState.IsValid)
+			//{
+			//	var countries = await countriesService.GetAllCountrise();
+			//	ViewBag.Countries = countries.Select(temp => new SelectListItem()
+			//	{
+			//		Text = temp.CountryName,
+			//		Value = temp.CountryId.ToString()
+			//	});
 
-				ViewBag.Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+			//	ViewBag.Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
 
-				return View(personAddRequest);
-			}
-			PersonResponse response = await personService.AddPerson(personAddRequest);
+			//	return View(personRequest);
+			//}
+
+			//Now it is inside filters
+			#endregion
+			PersonResponse response = await personService.AddPerson(personRequest);
 			return RedirectToAction("Index", "Persons");
 		}
 
@@ -109,38 +123,41 @@ namespace CRUDExample.Controllers
 
 		[HttpPost]
 		[Route("[action]/{personID}")]
-		public async Task<IActionResult> Edit(PersonUpdateRequest personUpdateRequest)
+		[TypeFilter(typeof(PersonCreateAndEditPostCreateActionFilter))]
+		public async Task<IActionResult> Edit(PersonUpdateRequest personRequest)
 		{
 
 
-			var person = await personService.GetPerson(personUpdateRequest.PersonId);
+			var person = await personService.GetPerson(personRequest.PersonId);
 			if (person == null)
 			{
 				return RedirectToAction("Index", "Persons");
 			}
+			//validation will be inside filters
 
-			if (ModelState.IsValid)
-			{
-				var personResponse = await personService.UpdatePerson(personUpdateRequest);
-				return RedirectToAction("Index", "Persons");
-			}
-			else
-			{
+			var personResponse = await personService.UpdatePerson(personRequest);
+			return RedirectToAction("Index", "Persons");
 
-				var countries = await countriesService.GetAllCountrise();
-				ViewBag.Countries = countries.Select(temp => new SelectListItem()
-				{
-					Text = temp.CountryName,
-					Value = temp.CountryId.ToString()
-				});
+			#region Хлам
+//else
+			//{
 
-				ViewBag.Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+			//	var countries = await countriesService.GetAllCountrise();
+			//	ViewBag.Countries = countries.Select(temp => new SelectListItem()
+			//	{
+			//		Text = temp.CountryName,
+			//		Value = temp.CountryId.ToString()
+			//	});
 
-				return View();
-			}
+			//	ViewBag.Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+
+			//	return View(personRequest);
+			//}
 
 			//var person = personService.GetPerson(personID)?.ToPersonUpdateRequest() ?? null;
 			//return RedirectToAction("Index", "Persons");
+			//return View(personRequest);
+			#endregion
 		}
 
 

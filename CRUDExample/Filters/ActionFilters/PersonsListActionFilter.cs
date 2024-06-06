@@ -15,7 +15,7 @@ namespace CRUDExample.Filters.ActionFilters
 		public void OnActionExecuted(ActionExecutedContext context)
 		{
 			//To do: add after logic here
-			_logger.LogInformation("PersonsListActionFilter.ActionExecutedContext method");
+			_logger.LogInformation("{FilterName}.{MethodName} method", nameof(PersonsListActionFilter), nameof(OnActionExecuted));
 
 
 			//Add Info To View Data
@@ -60,10 +60,10 @@ namespace CRUDExample.Filters.ActionFilters
 		public void OnActionExecuting(ActionExecutingContext context)
 		{
 			//To do: add before logic here
-			_logger.LogInformation("PersonsListActionFilter.OnActionExecuting method");
+			_logger.LogInformation("{FilterName}.{MethodName} method", nameof(PersonsListActionFilter), nameof(OnActionExecuting));
+
 
 			context.HttpContext.Items["arguments"] = context.ActionArguments;
-
 
 			//Validation
 			if (context.ActionArguments.ContainsKey("searchBy"))
@@ -77,7 +77,7 @@ namespace CRUDExample.Filters.ActionFilters
 						nameof(PersonResponse.Email),
 						nameof(PersonResponse.Gender),
 						nameof(PersonResponse.CountryId),
-						nameof(PersonResponse.Address),
+						nameof(PersonResponse.Address), 
 					};
 
 					if (searchByOptions.Any(temp => temp == searchBy) == false)
@@ -85,11 +85,9 @@ namespace CRUDExample.Filters.ActionFilters
 						_logger.LogInformation("searchBy actual value {0}", searchBy);
 						context.ActionArguments["searchBy"] = nameof(PersonResponse.PersonName);
 						_logger.LogInformation("searchBy updated value {0}", nameof(PersonResponse.PersonName));
-
 					}
 				}
 			}
-
 		}
 	}
 }
