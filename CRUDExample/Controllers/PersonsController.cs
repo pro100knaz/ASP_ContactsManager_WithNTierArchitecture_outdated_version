@@ -1,4 +1,8 @@
-﻿using CRUDExample.Filters.ActionFilters;
+﻿using CRUDExample.Filters;
+using CRUDExample.Filters.ActionFilters;
+using CRUDExample.Filters.AuthorizationFilter;
+using CRUDExample.Filters.ExceptionFilters;
+using CRUDExample.Filters.ResultFilters;
 using Enities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -12,11 +16,14 @@ using System.Text.Json;
 
 namespace CRUDExample.Controllers
 {
-	[Route("persons")]
+    [Route("persons")]
 	[TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = new object[]
 		{
 			"X-Custom-Key-From-Class","Custom-Value-From-Class", 8   //first value will be supplied autu by ioc but another we can supply personaly
 		})] //Just Can And Do and add Filter FOR EVERY METHOD inside that controller
+
+	[TypeFilter(typeof(HandleExceptionFilter))]
+	[TypeFilter(typeof(PersonsAlwaysRunResultFilter))]
 	public class PersonsController : Controller
 	{
 		private readonly ILogger<PersonsController> logger;
@@ -39,7 +46,9 @@ namespace CRUDExample.Controllers
 		{
 			"X-Custom-Key-From-Action","Custom-Value-From-Action", 3   //first value will be supplied autu by ioc but another we can supply personaly
 		} //, Order = 3  //Oorder like 0 , 1, 2 , 3 action 3, 2, 1, 0 )) easy and clear
-			)] 
+			)]
+		[TypeFilter(typeof(PersonsListResultFilter))]
+		[SkipFilter]
 		public async Task<IActionResult> Index(string searchBy, string? searchString,
 			string sortBy = nameof(PersonResponse.PersonName),
 			SortOrderOptions sortOrder = SortOrderOptions.Ascending)
@@ -102,6 +111,7 @@ namespace CRUDExample.Controllers
 
 		[HttpGet]
 		[Route("[action]/{personID}")]
+		[TypeFilter(typeof(TokenResultFilters))]
 		public async Task<IActionResult> Edit(Guid personID)
 		{
 			var country = (await personService.GetPerson(personID))?.ToPersonUpdateRequest() ?? null;
@@ -124,10 +134,9 @@ namespace CRUDExample.Controllers
 		[HttpPost]
 		[Route("[action]/{personID}")]
 		[TypeFilter(typeof(PersonCreateAndEditPostCreateActionFilter))]
+		[TypeFilter(typeof(TokenAuthorezationFilter))]
 		public async Task<IActionResult> Edit(PersonUpdateRequest personRequest)
 		{
-
-
 			var person = await personService.GetPerson(personRequest.PersonId);
 			if (person == null)
 			{
@@ -242,6 +251,5 @@ namespace CRUDExample.Controllers
 			var memoryStream = await personService.GetPersonExcel();
 			return File(memoryStream, "\tapplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "persons.xlsx");
 		}
-
 	}
 }
