@@ -6,6 +6,7 @@ using ServiceContracts;
 using Services;
 using Serilog;
 using CRUDExample.Filters.ActionFilters;
+using CRUDExample;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,56 +27,7 @@ builder.Host.UseSerilog((HostBuilderContext context, IServiceProvider services, 
 	.ReadFrom.Services(services); //read out current app's services and make them available to serilog
 });
 
-//adds controllers and views as services
-builder.Services.AddControllersWithViews(options =>
-{
-	//Adding Global Filters
-
-	//options.Filters.Add<ResponseHeaderActionFilter>(); // no parameters (onlu order)
-
-	var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<ResponseHeaderActionFilter>>(); //to build the required services
-																								 //GetService return null
-																								 //GetRequiredService throw exception, but if need for sure it is bettter ofc
-
-
-	options.Filters.Add(new ResponseHeaderActionFilter(logger, "My-Key-From-Global", "My-Value-From-Global", 0));  //With Parameters )
-
-
-	var logger1 = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<ResponseHeaderAsyncActionFilter>>();
-	options.Filters.Add(new ResponseHeaderAsyncActionFilter(logger1, "My-Key-From-Global-Async", "My-Value-From-Global-Async", 0));  //With Parameters )
-
-});
-
-builder.Services.AddHttpLogging(configureOptions =>
-{
-	//need to work app.UseHttpLogging(); even if configureOptions lambda is null it is still working and idk why but let it be
-	configureOptions.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestProperties
-	| Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.ResponsePropertiesAndHeaders; //in the same way we can add more or less information inside logging fields
-
-});
-
-
-
-builder.Services.AddScoped<ICountriesRepository, CountriesRepository>();
-builder.Services.AddScoped<IPersonsRepository, PersonsRepository>();
-
-builder.Services.AddScoped<ICountriesService, CountryService>();
-builder.Services.AddScoped<IPersonService, PersonService>();
-
-
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-{
-	options.UseSqlServer(builder.Configuration.GetConnectionString("PersonDb")); //явное укаазание тспользоание типа бд
-	//.LogTo(Console.WriteLine, LogLevel.Information); //he LogTo() method takes an Action as a parameter, that specifies where log messages should be sent,
-													 //and a LogLevel value that specifies the minimum log level at which messages should be sent.
-});
-
-
-
-
-
-
-
+builder.Services.ConfigureServices(builder.Configuration);
 
 var app = builder.Build();
 
