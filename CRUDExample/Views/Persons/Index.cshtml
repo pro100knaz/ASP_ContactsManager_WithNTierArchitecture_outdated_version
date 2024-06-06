@@ -4,48 +4,61 @@
 	ViewBag.Title = "Persons";
 }
 
-
 <form asp-action="Index" asp-controller="Persons" method="get">
-	<h1 class="text-center">Default Page ...</h1>
-	<h4 class="text-center text-green"> Maybe :)</h4>
 
-	<a asp-action="Create" asp-controller="Persons" >Create New Person</a>
-
-	<a asp-action="PersonsPdf" asp-controller="Persons">Download all as Pdf Data</a>
-
-
-	<a asp-action="PersonsCSV" asp-controller="Persons">Download all as Persons format</a> 
-
-
-	<a asp-action="PersonsExcel" asp-controller="Persons">Download all In Excel Data format</a>
-
-	<div class="box flex">
+	<!-- breadcrump start  -->
+	<div class="flex">
 		<div class="flex-1">
-			<select class="form-input" name="searchBy">
-				@* searchBy = PesonName (with name it becones a part of  form http request ) *@
-				@foreach (var field in ViewBag.SearchFields)
-				{
-					if (field.Key == ViewBag.CurrentSearchBy)
-					{
-						<option value="@field.Key" selected="selected">@field.Value</option>
-					}
-					else
-					{
-						<option value="@field.Key">@field.Value</option>
-					}
-				}
-			</select>
-		</div> 
-		<div class="flex-1">
-			<input type="search" id="Search" value="@ViewBag.CurrentSearchString" class="form-input"
-				   name="searchString"
-				   placeholder="Search"></input>
+			<span class="text-grey"> Contacts</span>
+			<i class="fa-solid fa-caret-right"></i>
+			<span class="text-grey"> Persons</span>
 		</div>
-		<div class="flex-1">
-			<button class="button button-blue-back">Search</button>
-			<a href="~/persons/index" class="link-hover">Clear all</a>
+		<div class="flex-1 text-right">
+			
+			<a asp-action="Create" asp-controller="Persons" class="button-link button-blue-back">Create New Person</a>
+
+			<a asp-action="PersonsPdf" asp-controller="Persons" class="button-link button-blue-back">Download all as Pdf Data</a>
+
+			<a asp-action="PersonsCSV" asp-controller="Persons" class="button-link button-blue-back">Download all as Persons format</a>
+
+			<a asp-action="PersonsExcel" asp-controller="Persons" class="button-link button-blue-back">Download all In Excel Data format</a>
 		</div>
 	</div>
+
+	<div class="table-container">
+
+		<div class="flex">
+			<div class="flex-1"> 
+				<h1> Persons </h1>
+			</div>
+			<div class="flex-3 text-right">
+				<label>Search by:</label>
+				<select class="search-dropdown" name="searchBy" style="width: 200px">
+					@* searchBy = PesonName (with name it becones a part of  form http request ) *@
+					@foreach (var field in ViewBag.SearchFields)
+					{
+						if (field.Key == ViewBag.CurrentSearchBy)
+						{
+							<option value="@field.Key" selected="selected">@field.Value</option>
+						}
+						else
+						{
+							<option value="@field.Key">@field.Value</option>
+						}
+					}
+				</select>
+
+				<input type="search" id="Search" value="@ViewBag.CurrentSearchString" class="search-text"
+					   name="searchString"
+					   placeholder="Search" style="width: 200px"></input>
+
+				<button class="search-button">Search</button>
+				<a href="~/persons/index" class="ml">Clear all</a>
+
+			</div>
+		</div>
+	
+
 
 	<table class="table w-100 mt persons">
 		<thead>
@@ -98,65 +111,28 @@
 				{"DisplayName", "Receive New Laters"}
 				})
 				<th>Options</th>
-
-
-				<!-- #region name -->
-				@* @if(ViewBag.CurrentSortBy == nameof(PersonResponse.PersonName)
-				&& ViewBag.CurrentSortOrder == SortOrderOptions.Ascending.ToString())
-				{
-				<th>
-				<a href="~/persons/index?
-				searchBy=@ViewBag.CurrentSearchBy&
-				searchString=@ViewBag.CurrentSearchString&
-				sortBy=@nameof(PersonResponse.PersonName)&
-				sortOrder=@nameof(SortOrderOptions.Descending)">Person Name</a>
-				<i class="fa-solid fa-sort-up"></i>
-				</th>
-
-				}
-				else if (ViewBag.CurrentSortBy == nameof(PersonResponse.PersonName)
-				&& ViewBag.CurrentSortOrder == SortOrderOptions.Descending.ToString())
-				{
-				<th>
-				<a href="~/persons/index?
-				searchBy=@ViewBag.CurrentSearchBy&
-				searchString=@ViewBag.CurrentSearchString&
-				sortBy=@nameof(PersonResponse.PersonName)&
-				sortOrder=@nameof(SortOrderOptions.Ascending)">Person Name</a> @* в случае нажатии на кнопку вид сортировки поменяется */@
-				<i class="fa-solid fa-sort-down"></i>
-				</th>
-				}
-				else
-				{
-				<th>
-				<a href="~/persons/index?
-				searchBy=@ViewBag.CurrentSearchBy&
-				searchString=@ViewBag.CurrentSearchString&
-				sortBy=@nameof(PersonResponse.PersonName)&
-				sortOrder=@nameof(SortOrderOptions.Ascending)">Person Name</a>
-				</th>
-				} *@
-				<!-- #endregion -->
 			</tr>
 		</thead>
 		<tbody>
 			@foreach (PersonResponse person in Model)
 			{
 				<tr>
-					<td style="width:15%">@person.PersonName</td>
+					<td style="width:10%">@person.PersonName</td>
 					<td style="width:20%">@person.Email </td>
-					<td style="width:13%">@person.DateOfBirth?.ToString("dd MMM yyyy")</td>
-					<td style="width:9%">@person.Age</td>
-					<td style="width:9%">@person.Gender</td>
+					<td style="width:10%">@person.DateOfBirth?.ToString("dd MMM yyyy")</td>
+					<td style="width:6%">@person.Age</td>
+					<td style="width:8%">@person.Gender</td>
 					<td style="width:10%">@person.Country</td>
-					<td style="width:10%">@person.Address</td>
-					<td style="width:20%">@person.ReceiveNewsLatters.ToString()</td>
-					<td style="width:20%" class="flex">
-						<a asp-action="edit" asp-controller="persons" class="button button-green-back" asp-route-personID="@person.Id">Edit</a>
-						<a asp-action="delete" asp-controller="persons" class="button button-red-back" asp-route-personID="@person.Id">Delete</a>
+					<td style="width:15%">@person.Address</td>
+					<td style="width:8%">@person.ReceiveNewsLatters.ToString()</td>
+					<td style="width:20%" class="flex-1">
+						
+						<a asp-action="edit" asp-controller="persons" class="button-blue-back button-link" asp-route-personID="@person.Id">Edit</a>
+						<a asp-action="delete" asp-controller="persons" class="button-link button-red-back" asp-route-personID="@person.Id">Delete</a>
 					</td>
 				</tr>
 			}
 		</tbody>
 	</table>
+	</div>
 </form>

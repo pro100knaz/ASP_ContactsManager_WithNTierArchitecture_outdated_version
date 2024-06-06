@@ -3,12 +3,24 @@
 @{
 	ViewBag.Title = "Create Person";
 }
+<div class="flex">
+	<div class="flex-1">
+		<span class="text-grey"> Contacts</span>
+		<i class="fa-solid fa-caret-right"></i>
+		<span class="text-grey"> Persons</span>
+		<i class="fa-solid fa-caret-right"></i>
+		<span class="text-grey"> Create</span>
+	</div>
+</div>
 
-<a asp-action="index" asp-controller="persons" class="link-hover"> Back To Persons List </a>
 
-<h2> Create Person</h2>
 
-<div class="center-box">
+<div class="form-container">
+
+	<a asp-action="index" asp-controller="persons" class="link-hover"> Back To Persons List </a>
+
+	<h2 class="text-large">Create Person</h2>
+
 	<form asp-action="create" asp-controller="persons" method="post">
 		<div class="container">
 			@*PersonName*@
@@ -49,22 +61,7 @@
 				</div>
 			</div>
 			@*Sawddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddnt*@
-			
-		@* 	<div class="form-field flex">
-			<div class="w-25">
-			<label class="form-label">Gender</label>
-			</div>
-			<div class="flex-1">
-			<input type="radio" id="Male" name="Gender" value="Male" />
-			<label for="Male">Male</label>
 
-			<input type="radio" id="Female" name="Gender" value="Female" class="ml" />
-			<label for="Female">Female</label>
-
-			<input type="radio" id="Other" name="Gender" value="Other" class="ml" />
-			<label for="Other">Other</label>
-			</div>
-			</div> *@
 
 
 
@@ -86,65 +83,6 @@
 				</div>
 			</div>
 
-
-
-
-@* 
-
-			<div class="flex-1">
-			<input type="radio" id="Male" name="Gender" value="Male" />
-			<label for="Male">Male</label>
-
-			<input type="radio" id="Female" name="Gender" value="Female" class="ml" />
-			<label for="Female">Female</label>
-
-			<input type="radio" id="Other" name="Gender" value="Other" class="ml" />
-			<label for="Other">Other</label>
-			
-			
-			
-			
-			<div class="flex-1">
-			<input type="radio" value="Male" id="Gender" name="Gender" />
-			<label class="form-label" for="Male">Male</label>
-			<input type="radio" value="Female" id="Gender" name="Gender" />
-			<label class="form-label" for="Female">Female</label>
-			<input type="radio" value="Other" id="Gender" name="Gender" />
-			<label class="form-label" for="Other">Other</label>
-			</div>
-
-
-
-
-
-			<div class="form-field flex">
-			<div class="w-25">
-			<label class="form-label" for="PersonName">Person Name</label>
-			</div>
-
-			<div class="flex-1">
-			<input class="form-input" type="text" data-val="true" data-val-required="Person Name can&#x27;t be blank " id="PersonName" name="PersonName" value="" />
-			<span class="text-red field-validation-valid" data-valmsg-for="PersonName" data-valmsg-replace="true"></span>
-			</div>
-			</div>
-
-
-			<div class="form-field flex">
-			<div class="w-25">
-			<label class="form-label" for="Email">Email</label>
-			</div>
-
-			<div class="flex-1">
-			<input class="form-input" type="email" data-val="true" data-val-email="INVALID EMAIL" data-val-required="Email can&#x27;t be blank " id="Email" name="Email" value="" />
-			<span class="text-red field-validation-valid" data-valmsg-for="Email" data-valmsg-replace="true"></span>
-			</div>
-			</div>
-
-			 *@
-			
-			
-			
-			
 
 			@*Sawddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddnt*@
 
@@ -183,7 +121,7 @@
 				<div class="w-25">
 				</div>
 				<div class="flex-1">
-					<input type="checkbox" asp-for="ReceiveNewsLatters"/>
+					<input type="checkbox" asp-for="ReceiveNewsLatters" />
 					<label asp-for="ReceiveNewsLatters" class="form-label">Receive News Latters</label> @*for нужен чтобы при начатии на текст выбиралась и выбранно или нет корочу вы поняли*@
 					<span asp-validation-for="ReceiveNewsLatters" class="text-red"></span>
 				</div>
@@ -215,9 +153,10 @@
 		<button>Submit</button>
 	</form>
 </div>
+ 
 
-@section scripts{
-	
+@section scripts 
+{
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
 			crossorigin="anonymous" asp-fallback-test="window.jQuery" asp-fallback-src="~/jquery.min" referrerpolicy="no-referrer"></script>
@@ -229,6 +168,6 @@
 	<script asp-fallback-src="~/jquery.validate.unobtrusive.min"
 			asp-fallback-test="window.jQuery.validator.unobstrusive"
 			src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
-	
 
 }
+

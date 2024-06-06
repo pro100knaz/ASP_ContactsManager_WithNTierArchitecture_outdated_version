@@ -4,11 +4,26 @@
 	ViewBag.Title = "Edit Person";
 }
 
-<a asp-action="index" asp-controller="persons" class="link-hover"> Back To Persons List </a>
 
-<h2> Edit Person</h2>
 
-<div class="center-box">
+<div class="flex">
+	<div class="flex-1">
+		<span class="text-grey"> Contacts</span>
+		<i class="fa-solid fa-caret-right"></i>
+		<span class="text-grey"> Persons</span>
+		<i class="fa-solid fa-caret-right"></i>
+		<span class="text-grey"> Create</span>
+	</div>
+</div>
+
+
+
+<div class="form-container">
+
+	<a asp-action="index" asp-controller="persons" class="link-hover"> Back To Persons List </a>
+
+	<h2 class="text-large"> Edit Person</h2>
+
 	<form asp-action="edit" asp-controller="persons" method="post">
 		<input type="hidden" asp-for="PersonId"/>
 		<div class="container">
@@ -51,23 +66,6 @@
 			</div>
 			@*Sawddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddnt*@
 
-			@* 	<div class="form-field flex">
-			<div class="w-25">
-			<label class="form-label">Gender</label>
-			</div>
-			<div class="flex-1">
-			<input type="radio" id="Male" name="Gender" value="Male" />
-			<label for="Male">Male</label>
-
-			<input type="radio" id="Female" name="Gender" value="Female" class="ml" />
-			<label for="Female">Female</label>
-
-			<input type="radio" id="Other" name="Gender" value="Other" class="ml" />
-			<label for="Other">Other</label>
-			</div>
-			</div> *@
-
-
 
 			<div class="form-field flex">
 				<div class="w-25">
@@ -90,63 +88,7 @@
 
 
 
-			@*
-
-			<div class="flex-1">
-			<input type="radio" id="Male" name="Gender" value="Male" />
-			<label for="Male">Male</label>
-
-			<input type="radio" id="Female" name="Gender" value="Female" class="ml" />
-			<label for="Female">Female</label>
-
-			<input type="radio" id="Other" name="Gender" value="Other" class="ml" />
-			<label for="Other">Other</label>
-
-
-
-
-			<div class="flex-1">
-			<input type="radio" value="Male" id="Gender" name="Gender" />
-			<label class="form-label" for="Male">Male</label>
-			<input type="radio" value="Female" id="Gender" name="Gender" />
-			<label class="form-label" for="Female">Female</label>
-			<input type="radio" value="Other" id="Gender" name="Gender" />
-			<label class="form-label" for="Other">Other</label>
-			</div>
-
-
-
-
-
-			<div class="form-field flex">
-			<div class="w-25">
-			<label class="form-label" for="PersonName">Person Name</label>
-			</div>
-
-			<div class="flex-1">
-			<input class="form-input" type="text" data-val="true" data-val-required="Person Name can&#x27;t be blank " id="PersonName" name="PersonName" value="" />
-			<span class="text-red field-validation-valid" data-valmsg-for="PersonName" data-valmsg-replace="true"></span>
-			</div>
-			</div>
-
-
-			<div class="form-field flex">
-			<div class="w-25">
-			<label class="form-label" for="Email">Email</label>
-			</div>
-
-			<div class="flex-1">
-			<input class="form-input" type="email" data-val="true" data-val-email="INVALID EMAIL" data-val-required="Email can&#x27;t be blank " id="Email" name="Email" value="" />
-			<span class="text-red field-validation-valid" data-valmsg-for="Email" data-valmsg-replace="true"></span>
-			</div>
-			</div>
-
-			*@
-
-
-
-
-
+		
 			@*Sawddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddnt*@
 
 			<div class="form-field flex">
