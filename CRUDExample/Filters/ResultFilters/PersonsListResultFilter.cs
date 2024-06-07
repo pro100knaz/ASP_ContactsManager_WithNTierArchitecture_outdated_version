@@ -15,15 +15,18 @@ namespace CRUDExample.Filters.ResultFilters
             //To Do Before
             logger.LogInformation("Inside {FilterName}. {MethodName} method executing before", nameof(PersonsListResultFilter), nameof(OnResultExecutionAsync));
 
-            await next();
+
+			context.HttpContext.Response.Headers["MyModification"] = DateTime.Now.ToString("dd-MM-yyyy HH:mm");
+			//context.HttpContext.Response.Headers.Add("MyModification", value: DateTime.Now.ToString("dd-MM-yyyy HH:mm"));
+			context.HttpContext.Response.Headers["awda"] = "adwawdawdawdawdawd";
+			context.HttpContext.Response.Headers["awdawd"] = "adwawdawdawdawdawd";
+			context.HttpContext.Response.Headers["awdadw"] = "adwawdawdawdawdawd";
+
+			await next();
             logger.LogInformation("Inside {FilterName}. {MethodName} method  executed", nameof(PersonsListResultFilter), nameof(OnResultExecutionAsync));
 
             //To do After
-            context.HttpContext.Response.Headers["MyModification"] = DateTime.Now.ToString("dd-MM-yyyy HH:mm");
-            //context.HttpContext.Response.Headers.Add("MyModification", value: DateTime.Now.ToString("dd-MM-yyyy HH:mm"));
-            context.HttpContext.Response.Headers["awda"] = "adwawdawdawdawdawd";
-            context.HttpContext.Response.Headers["awdawd"] = "adwawdawdawdawdawd";
-            context.HttpContext.Response.Headers["awdadw"] = "adwawdawdawdawdawd";
+          
         }
     }
 }
